@@ -1,4 +1,4 @@
-function findproc(muffins, students, alpha)
+function findproc(muffins::Int64, students::Int64, alpha::Int64)
 
 
 

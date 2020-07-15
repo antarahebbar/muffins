@@ -1,28 +1,35 @@
-function VInt(muffins, students, alpha)
-    V = Int64(ceil((2 * muffins)/students))
-    W = V-1
-    lowerproof= 1-(muffins//students)*(1//(V-2))
-    upperproof=(muffins//students)*(1//(V+1))
-    q = Int64(2*muffins - W*students)
-    r = Int64(V*students - 2*muffins)
-    Wshares=W*r
-    Vshares=V*q
+function vint(muffins, students, alpha)
 
+V = Int64(ceil((2 * muffins)/students))
+W = V-1
+lowerproof= 1-(muffins//students*(1//(V-2)))
+upperproof=(muffins//students)*(1//(V+1))
+q = Int64(2*muffins - W*students)
+r = Int64(V*students - 2*muffins)
+Wshares=W*r
+Vshares=V*q
 
+#claim
     println("Claim: there is a (", muffins, ",", students,") procedure where the smallest share is ", alpha)
     println("")
-    println("Each student will get either ", V, " or ", W, " shares")
-    println("If there is a student with <=", V-2," shares, a share's buddy is >= than ", lowerproof, " which is < ", alpha)
-    println("and if a student has >=", V+1, " shares, a share is >= than ", upperproof, " which is < ", alpha)
-    println("While s_", V," is the number of ", V, "-shares and s_", W, " is the number of ", W, "-shares, we can set up the equations: ")
-    println("The total number of shares: ", V, "s_",V," + ", W, "s_", W, " = ", 2*muffins)
-    println("And the total number of students: s_",V," + s_", W, " = ", students)
-    println("Once we solve, we get ", q, " students get ", V, " pieces and ", r, " students get ", W, " pieces, so there are ", Vshares, " ", V, "-shares and ", Wshares, " ", W, "-shares")
+
+#v-conjecture
+    println("Assuming the V-Conjecture, each student will get either ", V, " or ", W, " shares")
+    println("If Alice has <=", V-2," shares, a share's buddy is >= than ", muffins//students, " * ", 1//(V-2), " = ", lowerproof, " < ", alpha)
+    println("If Bob has >=", V+1, " shares, a share is >= than ", muffins//students, " * ", 1//(V+1), " = ", upperproof, " < ", alpha)
+    println("")
+
+#number of shares
+    println("While s_", V," is the number of ", V, "-shares and s_", W, " is the number of ", W, "-shares: ")
+    println(V, "s_",V," + ", W, "s_", W, " = ", 2*muffins)
+    println("s_",V," + s_", W, " = ", students)
+    println("")
+    println(q, " students get ", V, " pieces and ", r, " students get ", W, " pieces. There are ", Vshares, " ", V, "-shares and ", Wshares, " ", W, "-shares.")
     println("")
     println("We can set up the interval graph: ")
 
 
-
+#interval graph
     if Wshares > Vshares
 
         x=(muffins//students)-((V-1)*alpha)
@@ -54,22 +61,25 @@ function VInt(muffins, students, alpha)
             end
 
         elseif alpha>=x||x>=y
-            print("BOUND ERROR - the graph is incorrect")
+            print("BOUND ERROR - not able to produce a graph")
             println("")
         else
-            keylow=Int64(floor(Vshares/r))
-            keyhigh= Int64(ceil(Vshares/r))
-            other = W-keylow
 
-            println("(",Vshares, " ", V, "-shares)(---0---)(", middleshares, " ", W, "-shares)(---0---)(", Vshares, " ", W, "-shares)")
-            println(alpha, "        ", x, "  ", y, "       ", 1-y, " ", 1-x, "        ", 1-alpha)
-            println("")
-            println("We will call shares between ", 1-x, " and ", 1-alpha, " large-shares. Similarly those between ", y, " and ", 1-y, " are small shares")
-            println("The bounds are derived in the graph from this logic - ")
-            println("Since there are no shares between ", x, " and ", y, ", there must be no shares b/w their buddies, ", 1-y, " and ", 1-x)
-            println("Also, since there are ", Vshares, " ", V, "-shares b/w ", alpha, " and ", x, " there must be the same number of ", W, "-shares with their buddies, leaving ", middleshares, " shares in between ", y, " and ", 1-y)
-            println("The half method won't work here, since 1/2 of ", students, "//", students, " = ", students/2, "//", students, ", 1/2 is inside the interval with more shares, causing the half method to be innacurate")
-            println("")
+keylow=Int64(floor(Vshares/r))
+keyhigh= Int64(ceil(Vshares/r))
+other = W-keylow
+
+println("(",Vshares, " ", V, "-shares)(---0---)(", middleshares, " ", W, "-shares)(---0---)(", Vshares, " ", W, "-shares)")
+println(alpha, "        ", x, "  ", y, "       ", 1-y, " ", 1-x, "        ", 1-alpha)
+println("")
+println("In the ", W, "-shares, the shares between ", 1-x, " and ", 1-alpha, " are large-shares and those between ", y, " and ", 1-y, " are small shares")
+println("")
+
+
+#proof in shares
+println("Since there are no shares between ", x, " and ", y, ", there must be no shares b/w their buddies, ", 1-y, " and ", 1-x)
+println("Also, since there are ", Vshares, " ", V, "-shares b/w ", alpha, " and ", x, " there must be ", middleshares, " of ", W, "-shares in between ", y, " and ", 1-y, ", their buddies")
+println("")
 
             if keyhigh*r>Vshares
                 newdown=1-muffins//students+(W-1)
