@@ -1,116 +1,102 @@
-function vhalf(muffins, students, alpha)
-    # this program gives a proof of an f(m,s,alpha) input, using the half method
+include("tools.jl")
+export findend, sv
 
-V = Int64(ceil((2 * muffins)/students))
-W = V-1
-lowerproof= 1-(muffins//students)*(1//(V-2))
-upperproof=(muffins//students)*(1//(V+1))
+# this program gives a proof of an f(m,s,alpha) input, using the half method
+function vhalf(m::Int64, s::Int64, a)
 
+output=false
+total=m//s
+V,W,Vshr,Wshr = sv(m,s)
 
-    #cases and claim
-println("Claim: there is a (", muffins, ",", students, ") procedure where the smallest piece is >=", alpha)
+lowerproof= 1-(m//s)*(1//(V-2))
+upperproof=(m//s)*(1//(V+1))
+
+#checking if alpha is viable
+if lowerproof>a||upperproof>a
+    return "This case is impossible"
+    false
+
+elseif m<=0||s<=0||a<=0
+    return "Input m,s & a>0"
+    false
+elseif a<1//3
+    return "Alpha must be greater than 1//3"
+    false
+elseif a>1
+    return "Alpha must be a <=1"
+    false
+else
+#cases and claim
+
+println("Claim: there is a (", m, ",", s, ") procedure where the smallest piece is >=", a)
 println("")
-println("Case 1: Alice gets >=", V+1, " shares, then one of them is ", muffins//students, "*", 1//(V+1), "= ", upperproof, ", which is <=", alpha)
-println("Case 2: Bob gets <= ", V-2, " shares, one of them is ", muffins//students, "*", lowerproof, "= ", muffins//students*(1//(V-2)), ". Its buddy is ", 1-(muffins//students*(1//(V-2))), " <=", alpha)
-println("Case 3: Hence, the student has >= ", V, " pieces or <= ", W, "pieces. There are total ", Int(muffins*2), " pieces and ", students, " students.")
+
+println("Case 1: Alice gets >=", V+1, " shares, then one of them is ", m//s, "*", 1//(V+1), "= ", upperproof, ", which is <=", a)
+println("Case 2: Bob gets <= ", V-2, " shares, one of them is ", m//s, "*", lowerproof, "= ", m//s*(1//(V-2)), ". Its buddy is ", 1-(m//s*(1//(V-2))), " <=", a)
+println("Hence, the student has >= ", V, " pieces or <= ", W, "pieces. There are total ", Int(m*2), " pieces and ", s, " students.")
 println("")
 
-#solving for shares
-x = Int64(2*muffins - W*students)
-y = Int64(V*students - 2*muffins)
-
-Wshares = W*y
-Vshares = V*x
+#checking if V-conjecture holds
 
 
-println(V, "s_",V," + ", W, "s_", W, " = ", 2*muffins)
-println("s_", V," + s_", W, " = ", students)
+println(V, "s_",V," + ", W, "s_", W, " = ", 2*m)
+println("s_", V," + s_", W, " = ", s)
 println("")
-println("Hence, s_", V, "=", x, " and s_", W, "=",y,". ", x, " students get ", V, " pieces and ", y, " students get ", W, " pieces.")
-println("There are ", Vshares, " ", V, "-shares and ", Wshares, " ", W, "-shares.")
+println("Hence, s_", V, "=", Vshr, " and s_", W, "=",Wshr,". ", Vshr, " students get ", V, " pieces and ", Wshr, " students get ", W, " pieces.")
+println("There are ", V*Vshr, " ", V, "-shares and ", W*Wshr, " ", W, "-shares.")
 println("")
 
-if Wshares > muffins
-    greaterhalf=Wshares
-    key = W
-    other=V
-elseif Vshares>muffins
-    greaterhalf=Vshares
-    key = V
-    other=W
+
+#findend to solve for intervals
+((_, x,), (y,_)) = findend(m,s,a,V)
+
+#cases 3 and 4
+check1 = (total-x)*(1//(V-1))
+check2= 1-(total-y)*(1//(W-1))
+
+if check1!=a ||check2!=a
+    println("Error, alpha does not work.") #add V-conjecture error?
+    false
+else
+println("Case 3: Alice has a $V share >= $x. Alice's other $V shares add up to >= $total-$x. Hence one of them is $(total-x) * $(1//(V-1)) = $check1")
+println("Case 4: Bob is a $W share <= $y. Bob's other shares add up to <= $total-$y, hence one of them is $(total-y)* $(1//(W-1)) = $(1-check2), whose buddy is $check2")
+
 end
 
 
 #proof
-halfsum=muffins//students-1//2
-firstbound=halfsum//(key-1)
-upperbound=max(firstbound, 1-firstbound)
-lowerbound=min(firstbound, 1-firstbound)
 
-
-
-
-#proof of alpha
-
-
-if lowerbound!= alpha&&lowerbound>1//3
-    println("Error, alpha cannot be derived with half method.")
-elseif alpha==1//3&&lowerbound<1//3
-    println("Contradiction: we have ", greaterhalf," ", key, "-shares and only ", muffins," muffins. Not all shares can be <1/2, so some will have to be >=1/2.")
-    println("")
-
-    println("The sum of all ", key, "-shares is ", muffins//students)
-    println("Assume there is one ", V, " share that is <= 1//2. The sum of the remaining shares is ", muffins//students, "-", 1//2, "=", halfsum)
-
-            #solving for alpha
-    println("There are ", key-1, " remaining shares. We divide ", halfsum, " by ", key-1, " to get ", upperbound)
-    println("The buddy of ", upperbound, " is ", lowerbound, ". Since ", lowerbound, "< 1//3, a procedure with ", lowerbound, " will have to be cut into 3 pieces.")
-    println("Thereofore, alpha is 1//3.")
-    println("")
-else
-
-    println("Contradiction: we have ", greaterhalf," ", key, "-shares and only ", muffins," muffins. Not all shares can be <1/2, so some will have to be >=1/2.")
-    println("")
-
-    println("The sum of all ", key, "-shares is ", muffins//students)
-    println("Assume there is one ", V, " share that is <= 1//2. The sum of the remaining shares is ", muffins//students, "-", 1//2, "=", halfsum)
-
-            #solving for alpha
-    println("There are ", key-1, " remaining shares. We divide ", halfsum, " by ", key-1, " to get ", upperbound)
-    println("The buddy of ", upperbound, " is ", lowerbound, "!")
-    println("")
-
+    if x<=1//2 && V*Vshr>m
+        println("Alpha works. There are more than ", m," shares that are <=1/2")
+        println("")
+        output=true
+    elseif y>=1/2 && W*Wshr>m
+        println("Alpha works. There are more than ", m, " shares that are >=1/2")
+        println("")
+        output=true
+    else
+        println("There are not enough shares in the intervals, alpha does not work")
+        false
 end
 
+#diagram output
 
-    #diagram
+if output
+if x==a ||y==1-a
+    println("Intervals in the diagram are overlapping, alpha does not work")
+    false
+elseif x>a && y<1-a && x<y
+    println("The following diagram is created: ")
+    println("(    ", V*Vshr, " " , V, "-shares   )-(0)-(   ", W*Wshr, " ", W, "-shares   )")
+    println(a, "          ", x, "  ", y, "            ", 1-a)
 
-if alpha<=1//3&&V==3
-    println("(    ", Vshares, " " , V, "-shares   )-(0)-(   ", Wshares, " ", W, "-shares   )")
-    println(1//3, "               ", 1//2, "                 ", 2//3)
 else
-    if Wshares>muffins
-
-        missingbound=(muffins//students)-(V-1)*lowerbound
-        if missingbound>1//2 || missingbound<alpha
-            println("Error, cannot produce diagram as bounds overlap.") #bound error
-
-        else
-            println("(    ", Vshares, " " , V, "-shares   )-(0)-(   ", Wshares, " ", W, "-shares   )")
-            println(lowerbound, "          ", missingbound, "  ", 1//2, "            ", upperbound)
-        end
-
-    elseif  Vshares>muffins
-        missingbound=(muffins//students)-(W-1)*upperbound
-        if missingbound<1//2 || missingbound>upperbound
-            println("Error, cannot produce diagram as bounds overlap.") #bound error
-        else
-            println("(    ", Vshares, " " , V, "-shares   )-(0)-(   ", Wshares, " ", W, "-shares   )")
-        println(lowerbound, "          ", 1//2, "  ", missingbound, "            ", upperbound)
-
-        end
-    end
+    println("diagram could not be found, intervals did not work")
+    false
 end
 
+end
+end
 
+(output)
 end
