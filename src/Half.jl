@@ -1,11 +1,11 @@
 
 include("tools.jl")
-export sv
+export sv, findend
 
 include("halfproof.jl")
 export halfproof
 
-function vhalf1(m,s,a)
+function vhalf(m,s,a, proof)
 
 total=m//s
 V,W,Vshr,Wshr = sv(m,s)
@@ -44,7 +44,7 @@ end
 end
 end
 
-function half(m::Int64, s::Int64, proof::Bool)
+function half(m::Int64, s::Int64, proof::Bool=false)
 
 if m % s==0
         return "s divides into m, output is 1"
@@ -63,7 +63,7 @@ if W*Wshr>V*Vshr
         return a
     else
         a=alpha1
-        if vhalf1(m,s,a)
+        if vhalf(m,s,a)
             return a
         else
             return "No output"
@@ -76,14 +76,13 @@ elseif W*Wshr<V*Vshr
         return a
     else
         a=alpha2
-        if vhalf1(m,s,a)
+        if vhalf(m,s,a)
             return a
         else
             return "No output"
         end
     end
 end
-
 end
 
 end
