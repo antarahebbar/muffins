@@ -6,6 +6,7 @@ export fracstring
 
 # this program gives a proof of an f(m,s,alpha) input, using the half method
 function halfproof(m::Int64, s::Int64, a, proof::Bool=true)
+output=false
 
 if proof
 total=m//s
@@ -101,10 +102,12 @@ println("Case 4: Bob is a $W share <= $yS. Bob's other shares add up to <= $tota
         println("Alpha works. There are more than $m shares that are <=1/2")
         println("")
         output=true
+
     elseif y>=1/2 && W*Wshr>m
         println("Alpha works. There are more than $m shares that are >=1/2")
         println("")
         output=true
+
     else
         println("There are not enough shares in the intervals, alpha does not work")
 end
