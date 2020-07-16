@@ -7,6 +7,8 @@ export fracstring
 function intproof(m, s, a, proof::Bool=false)
 V, W, q, r = sv(m,s)
 
+if proof
+
 total=m//s
 abuddy=1-a
 lowerproof= 1-(total*(1//(V-2)))
@@ -61,8 +63,6 @@ yS=fracstring(y, den)
 xB=fracstring(xbuddy, den)
 yB=fracstring(ybuddy, den)
 
-
-check1 = (total - (W-2)*ybuddy - (W-2))//((W-2)*(-W)+(W-2)*(-1))
 
 
 if x>y
@@ -182,5 +182,8 @@ else
 
 end
 end
+end
+else
+    exit(0)
 end
 end
