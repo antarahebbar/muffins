@@ -2,7 +2,7 @@ include("tools.jl")
 export findend, sv
 
 # this program gives a proof of an f(m,s,alpha) input, using the half method
-function halfproof(m::Int64, s::Int64, a, proof::Bool=false)
+function halfproof(m::Int64, s::Int64, a, proof::Bool=true)
 
 if proof
 total=m//s
