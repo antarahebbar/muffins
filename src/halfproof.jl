@@ -14,17 +14,13 @@ upperproof=(m//s)*(1//(V+1))
 #checking if alpha is viable
 if lowerproof>a||upperproof>a
     println("This case is impossible")
-    return false
 
 elseif m<=0||s<=0||a<=0
     println("Input m,s & a>0")
-    return false
 elseif a<1//3||a>1//2
     println("Alpha must be greater than 1//3 and less than 1//2")
-    return false
 elseif a>1
     println("Alpha must be a <=1")
-    return false
 else
 #cases and claim
 
@@ -56,7 +52,7 @@ check2= 1-(total-y)*(1//(W-1))
 
 if check1!=a ||check2!=a
     println("Error, alpha does not work.") #add V-conjecture error?
-    return false
+
 else
 println("Case 3: Alice has a $V share >= $x. Alice's other $V shares add up to >= $total-$x. Hence one of them is $(total-x) * $(1//(V-1)) = $check1")
 println("Case 4: Bob is a $W share <= $y. Bob's other shares add up to <= $total-$y, hence one of them is $(total-y)* $(1//(W-1)) = $(1-check2), whose buddy is $check2")
@@ -75,7 +71,6 @@ println("Case 4: Bob is a $W share <= $y. Bob's other shares add up to <= $total
         output=true
     else
         println("There are not enough shares in the intervals, alpha does not work")
-        return false
 end
 
 #diagram output
@@ -83,7 +78,7 @@ end
 if output
 if x==a ||y==1-a
     println("Intervals in the diagram are overlapping, alpha does not work")
-    false
+    output=false
 elseif x>a && y<1-a && x<y
     println("The following diagram is created: ")
     println("(    ", V*Vshr, " " , V, "-shares   )-(0)-(   ", W*Wshr, " ", W, "-shares   )")
@@ -91,7 +86,7 @@ elseif x>a && y<1-a && x<y
 
 else
     println("diagram could not be found, intervals did not work")
-    false
+    output=false
 end
 
 end
