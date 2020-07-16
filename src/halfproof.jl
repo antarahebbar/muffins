@@ -2,9 +2,9 @@ include("tools.jl")
 export findend, sv
 
 # this program gives a proof of an f(m,s,alpha) input, using the half method
-function halfproof(m::Int64, s::Int64, a)
+function halfproof(m::Int64, s::Int64, a, proof::Bool=false)
 
-output=false
+if proof
 total=m//s
 V,W,Vshr,Wshr = sv(m,s)
 
@@ -97,5 +97,8 @@ end
 end
 end
 end
-(output)
+
+else
+    exit(0)
+end
 end
