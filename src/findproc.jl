@@ -1,5 +1,4 @@
 
-
 function findproc(muffins,students, alpha)
     lcmalpha=lcm(students, denominator(alpha))
     V = Int64(ceil((2 * muffins)/students))

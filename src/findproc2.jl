@@ -19,7 +19,7 @@ j=4
 return solve(B, n, T, j)
 end
 
-#B is set, n is length of set, T is sum, j is target size of multiset
+#helper function for findprof, B is set, n is length of set, T is sum, j is target size of multiset
 function solve(B, n, T, j)
 
 #error if negative or 0 numbers inputted
