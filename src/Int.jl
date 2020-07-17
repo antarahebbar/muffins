@@ -4,6 +4,9 @@ export sv, findend
 include("text.jl")
 export fracstring
 
+include("intproof.jl")
+export intproof
+
 function int(m,s, proof::Bool=false)
 V, W, q, r = sv(m,s)
 

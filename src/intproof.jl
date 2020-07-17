@@ -5,7 +5,7 @@ include("text.jl")
 export fracstring
 
 include("formatj.jl")
-using .Formatj
+export printf, printfT, printHeader, findlast
 
 function intproof(m, s, a, proof::Bool=false)
 a = toFrac(a)
@@ -33,35 +33,40 @@ aB=fracstring(abuddy, den)
 lpbuddyS = fracstring(lpbuddy, denominator(lpbuddy))
 
 if lowerproof>=a ||upperproof >=a
-    println("alpha does not follow v-conjecture")
+    printf("Alpha does not follow v-conjecture")
+    printEnd()
 elseif a<1//3||a>1//2
-    println("a must be >1//3 and <1//2")
-elseif m%s==0||m<s
-    println("vint does not apply to input")
+    printf("Alpha must be >1//3 and <1//2")
+    printEnd()
+elseif m%s==0
+    printf("Int method does not apply to input, alpha is 1 since s divides into m")
+    printEnd()
+elseif m<s
+    printf("Int method does not apply, m must be > than s")
+    printEnd()
 else
 
 #claim
     printHeader("CLAIM:")
     printf("There is a ($m, $s) procedure where the smallest piece is >= $aS.")
 
-#assumptions - printfT does not work here, error says "no methods matching findlast"
-    printHeader("ASSUMPTIONS:")
+#assumptions
+    printHeader("ASSUMPTION:")
     printfT("Theorem 2.6", "If there is an ($m, $s) procedure with smallest piece α > 1/3, there is an ($m, $s) procedure where every muffin is cut into 2 pieces, therefore there are $(2*m) total shares.")
+    printfT("Buddies", "If there exists share size α, there also must exist a share size 1-α. Therefore, all possible shares sizes exist between [α, 1-α].")
 
+#verifying v-conjecture
+printHeader("CASEWORK:")
+printfT("V-Conjecture", "Case 1: If Alice has <= $(V-2) shares, a share is >= $(totalS) * $(1//(V-2)), which = $lpbuddyS. Its buddy is $lpS < $aS")
+printfT("V-Conjecture", "Case 2: If Bob has >= $(V+1) shares, a share is >= than $(total) * $(1//(V+1)), which = $upS. $upS < $aS")
 
-#v-conjecture
-    println("Assuming the V-Conjecture, each student will get either $V or $W shares")
-    println("Case 1: If Alice has <= $(V-2) shares, a share is >= than $(totalS) * $(1//(V-2)) = $lpbuddyS. Its buddy is $lpS < $aS")
-    println("Case 2: If Bob has >= $(V+1) shares, a share is >= than $(total) * $(1//(V+1)) = $upS < $aS")
-    println("")
+#verifying v-conjecture
+printHeader("USING V-CONJECTURE TO SOLVE FOR # OF SHARES:")
+printfT("V-Conjecture", "Assuming the V-Conjecture, each student will get either $V or $W shares.")
 
 #number of shares
-    println("While s_$V is the number of $V-shares and s_$W is the number of $W-shares: ")
-    println(V, "s_$V + ", W, "s_$W = $(2*m)")
-    println("s_$V + s_$W = $s")
-    println("")
-    println("$q students get $V pieces and $r students get $W pieces. There are $Vshares $V-shares and $Wshares $W-shares.")
-    println("")
+printfT("V-Conjecture", "While s_$V is the number of $V-shares and s_$W is the number of $W-shares: ","", "($V)s_$V + ($W)s_$W = $(2*m)", "s_$V + s_$W = $s", "", "$q students get $V pieces and $r students get $W pieces. There are $Vshares $V-shares and $Wshares $W-shares.")
+println("")
 
 
 #cases
@@ -79,7 +84,8 @@ yB=fracstring(ybuddy, den)
 
 
 if x>y
-    println("Intervals are not disjoint, you can probably use half/fc")
+    printf("Intervals are not disjoint, you should use half/fc to solve for alpha")
+    printEnd()
 
 else
 
@@ -88,10 +94,9 @@ if Wshares > Vshares #according to VV conjecture the gap will exist in the Wshar
     newgapshr= Wshares-Vshares
 
 #diagram
-println("Diagram:")
-println("($Vshares $V-shares)(---0---)($newgapshr $W-shares)(---0---)($Vshares $W-shares)")
-println("$aS    $xS   $yS     $yB   $xB     $aB")
-println("")
+printHeader("INTERVAL DIAGRAM: ")
+printf("($Vshares $V-shares)(---0---)($newgapshr $W-shares)(---0---)($Vshares $W-shares)")
+printf("$aS     $xS     $yS       $yB     $xB       $aB")
 
 #calculating minimum i to create contradiction for largeshares
 i=0
@@ -117,7 +122,6 @@ for j=1:W
         break
     end
 end
-println(key1, " ", key2)
 check1 = (W-key1+1)*(ybuddy)+(key1-1)*(abuddy)
 check2 = (key2-1)*xbuddy+(W-key2+1)*y #not sure if this algorithm is correct
 
@@ -138,12 +142,12 @@ end
 
 elseif Wshares<Vshares
 
-        #diagram
 newgapshr=Vshares-Wshares
-println("Diagram:")
-println("($Vshares $V-shares)(---0---)($newgapshr $V-shares)(---0---)($Vshares $W-shares)")
-println("$a     $yB     $xB      $xS    $yS       $aB")
-println("")
+
+#diagram
+printHeader("INTERVAL DIAGRAM: ")
+printf("", "($Vshares $V-shares)(---0---)($newgapshr $V-shares)(---0---)($Vshares $W-shares)")
+printf("$a      $yB      $xB        $xS       $yS          $aB")
 
 #calculating minimum i to create contradiction in largeshares
 i=0
