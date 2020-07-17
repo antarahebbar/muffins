@@ -96,7 +96,7 @@ elseif W*Wshr<V*Vshr
             if proof
                 return halfproof(m,s,a,true)
             end
-            a = fractstring(a, lcm(s, denominator(a)))
+            a = fracstring(a, lcm(s, denominator(a)))
             return a
         else
             return "No output"
