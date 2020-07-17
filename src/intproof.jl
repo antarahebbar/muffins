@@ -4,7 +4,12 @@ export findend, sv
 include("text.jl")
 export fracstring
 
+include("formatj.jl")
+using .Formatj
+
 function intproof(m, s, a, proof::Bool=false)
+a = toFrac(a)
+
 V, W, q, r = sv(m,s)
 
 if proof
@@ -12,6 +17,7 @@ if proof
 total=m//s
 abuddy=1-a
 lowerproof= 1-(total*(1//(V-2)))
+lpbuddy = 1-lowerproof
 upperproof=(total)*(1//(V+1))
 
 Wshares=W*r
@@ -24,6 +30,7 @@ upS=fracstring(upperproof, denominator(upperproof))
 aS=fracstring(a, den)
 totalS=fracstring(total, den)
 aB=fracstring(abuddy, den)
+lpbuddyS = fracstring(lpbuddy, denominator(lpbuddy))
 
 if lowerproof>=a ||upperproof >=a
     println("alpha does not follow v-conjecture")
@@ -34,11 +41,17 @@ elseif m%s==0||m<s
 else
 
 #claim
-    println("Claim: there is a ($m, $s) procedure where the smallest piece is >= $aS.")
+    printHeader("CLAIM:")
+    printf("There is a ($m, $s) procedure where the smallest piece is >= $aS.")
+
+#assumptions - printfT does not work here, error says "no methods matching findlast"
+    printHeader("ASSUMPTIONS:")
+    printfT("Theorem 2.6", "If there is an ($m, $s) procedure with smallest piece α > 1/3, there is an ($m, $s) procedure where every muffin is cut into 2 pieces, therefore there are $(2*m) total shares.")
+
 
 #v-conjecture
     println("Assuming the V-Conjecture, each student will get either $V or $W shares")
-    println("Case 1: If Alice has <= $(V-2) shares, a share's buddy is >= than $(totalS) * $(1//(V-2)) = $lpS, < $aS")
+    println("Case 1: If Alice has <= $(V-2) shares, a share is >= than $(totalS) * $(1//(V-2)) = $lpbuddyS. Its buddy is $lpS < $aS")
     println("Case 2: If Bob has >= $(V+1) shares, a share is >= than $(total) * $(1//(V+1)) = $upS < $aS")
     println("")
 
@@ -104,11 +117,9 @@ for j=1:W
         break
     end
 end
-
 println(key1, " ", key2)
 check1 = (W-key1+1)*(ybuddy)+(key1-1)*(abuddy)
 check2 = (key2-1)*xbuddy+(W-key2+1)*y #not sure if this algorithm is correct
-println(check2)
 
 #case3 - do shares total up to m/s?
 
@@ -184,6 +195,6 @@ end
 end
 end
 else
-    exit(0)
+    return "input true to print proof"
 end
 end
