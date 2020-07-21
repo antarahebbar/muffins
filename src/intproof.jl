@@ -24,7 +24,7 @@ Wshares=W*r
 Vshares=V*q
 den=lcm(s, denominator(a))
 
-#format
+#formatting into fractions
 lpS=fracstring(lowerproof, denominator(lowerproof))
 upS=fracstring(upperproof, denominator(upperproof))
 aS=fracstring(a, den)
@@ -32,8 +32,8 @@ totalS=fracstring(total, den)
 aB=fracstring(abuddy, den)
 lpbuddyS = fracstring(lpbuddy, denominator(lpbuddy))
 
-if lowerproof>=a ||upperproof >=a
-    printf("Alpha does not follow v-conjecture")
+if lowerproof>a ||upperproof >a
+    printf("Alpha does not comply with v-conjecture, V-Int failed")
     printEnd()
 elseif a<1//3||a>1//2
     printf("Alpha must be >1//3 and <1//2")
@@ -51,16 +51,16 @@ else
     printf("There is a ($m, $s) procedure where the smallest piece is >= $aS.")
 
 #assumptions
-    printHeader("ASSUMPTION:")
+    printHeader("ASSUMPTIONS:")
     printfT("Theorem 2.6", "If there is an ($m, $s) procedure with smallest piece α > 1/3, there is an ($m, $s) procedure where every muffin is cut into 2 pieces, therefore there are $(2*m) total shares.")
-    printfT("Buddies", "If there exists share size α, there also must exist a share size 1-α. Therefore, all possible shares sizes exist between [α, 1-α].")
+    printfT("Buddies", "If there exists share size α, there also must exist a share size 1-α. Therefore, all possible shares sizes exist between [$aS, $aB].")
 
 #verifying v-conjecture
 printHeader("CASEWORK:")
 printfT("V-Conjecture", "Case 1: If Alice has <= $(V-2) shares, a share is >= $(totalS) * $(1//(V-2)), which = $lpbuddyS. Its buddy is $lpS < $aS")
 printfT("V-Conjecture", "Case 2: If Bob has >= $(V+1) shares, a share is >= than $(total) * $(1//(V+1)), which = $upS. $upS < $aS")
 
-#verifying v-conjecture
+#solving for shares
 printHeader("USING V-CONJECTURE TO SOLVE FOR # OF SHARES:")
 printfT("V-Conjecture", "Assuming the V-Conjecture, each student will get either $V or $W shares.")
 
@@ -85,6 +85,9 @@ yB=fracstring(ybuddy, den)
 
 if x>y
     printf("Intervals are not disjoint, you should use half/fc to solve for alpha")
+    printEnd()
+elseif x==a || y==(1-a)
+    printf("Findend failed, intproof failed")
     printEnd()
 
 else

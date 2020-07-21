@@ -27,9 +27,10 @@ else
     if Wshares>Vshares
         newdown1=1-total+(W-1)
         newdown2=1-total
-        k=Int64(floor(Vshares/r))
-        f=W-k
-        a1= (k+f*newdown1-total)//(k+f*(W-1))
+        ubmin=Int64(floor(Vshares/r))
+        lbmin = Int64(floor((Wshares-Vshares)/r)
+        f=W-ubmin
+        a1= (ubmin+f*newdown1-total)//(ubmin+f*(W-1))
         a2=(total-(V-f)*(newdown2)-(f-1)*(1-newdown1))//((V-f)*(V-1)-(f-1)*(W-1))
 
         if a1<=1//3||a2<=1//3
@@ -95,11 +96,11 @@ upperproof=(total)*(1//(V+1))
 Wshares=W*r
 Vshares=V*q
 
-if lowerproof>=a ||upperproof >=a
+if lowerproof>a ||upperproof >a #checking to see if v-conjecture works
     return false
-elseif a<1//3||a>1//2
+elseif a<1//3||a>1//2  #checks to see if a bounds are correct
     return false
-elseif m%s==0||m<s
+elseif m%s==0||m<s #checks to see if m&s are incompatible with int
     return false
 else
 
@@ -117,12 +118,10 @@ if check1!=a ||check2!=a
     return false
 elseif x>y
     return false
-else
-
-if x>y
+elseif x==a || y==(1-a)
     return false
-
 else
+
 
 if Wshares > Vshares #according to VV conjecture the gap will exist in the Wshares
     newgapshr= Wshares-Vshares
