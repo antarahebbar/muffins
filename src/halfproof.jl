@@ -129,8 +129,13 @@ if x==a ||y==1-a
 
 elseif x>a && y<1-a && x<y
     printHeader("INTERVAL DIAGRAM: ")
-    printf("(    ", V*Vshr, " " , V, "-shares   )-(0)-(   ", W*Wshr, " ", W, "-shares   )")
-    printf(aS, "          ", xS, "  ", yS, "            ", aB)
+    printf("The following captures the previous statements: ")
+    println("\n",
+            interval(["(", aS],
+                    [")[", xS],
+                    ["](", yS],
+                    [")", aB],
+                    labels=["$(V*Vshr) $V-shs", "0", "$(W*Wshr) $W-shs"]))
 
 else
     printf("vHalf could not generate conclusive intervals for this case")
