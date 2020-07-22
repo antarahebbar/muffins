@@ -2,6 +2,7 @@
 include("text.jl")
 export fracstring
 
+#taking m,s, program will use floor-ceiling method to output alpha, -1 signifies no value
 function fc(m, s)
 
 #FC calculations
@@ -14,21 +15,14 @@ den = lcm(s, denominator(ans))
 ansS = fracstring(ans, den)
 
 #output
-if m%s==0
+if m%s==0 #if shares divide into muffin
     return 1
-elseif m<s
+elseif m<s #incorrect input
     return false #cannot m<s
-elseif m>s
+elseif m>s #answer as a string
     return ansS
-else
-    return false
+else # -1 is indicator for no answer
+    return -1
 
 end
 end
-
-
-
-#key = (2 * s)/m
-#min1=min(1//Int64(ceil(key)), m//s-(1-(Int64(floor(key)))))
-#ans= max((m//s*1//3), min1, (1-m//s))
-#println(min1)

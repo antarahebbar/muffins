@@ -7,12 +7,14 @@ export fracstring
 include("intproof.jl")
 export intproof
 
+
+#taking m,s, program will output int if vint verifies it, will also ouput optional proof
 function int(m,s, proof::Bool=false)
 V, W, Vnum, Wnum = sv(m,s)
 
 total = m//s
-Wshares=W*Wnum
-Vshares=V*Vnum
+Wshares= W*Wnum
+Vshares= V*Vnum
 
 #format
 
@@ -44,7 +46,7 @@ else
             a = min(a1, a2)
             den=lcm(s, denominator(a))
 
-            if vint1(m,s,a)
+            if vint1(m,s,a)==0 #vint worked
                 if proof
                     return intproof(m,s,a,true)
                 end
@@ -52,14 +54,21 @@ else
                 ans=fracstring(a, den)
                 return ans
             else
-                return "v-int does not verify alpha"
+                if proof
+                    return intproof(m,s,a,true)
+                end
+                return -1 #int failed, could not find conclusive alpha
         end
         end
 
     elseif Vshares>Wshares
-        k=Int64(floor((Vshares-Wshares)/Vnum))
+
+        j = Int64(floor((Vshares-Wshares)/Vnum))
+        k=Int64(floor((Wshares/Vnum)))
+        a = min(((V-j)W + (2j -V-1)m//s)//((V-j)W + (j-1)V),    # Value for alpha derived by solving f(1-x) + (V-f)(1-y) = m/s
+                    ((V-k+1)m//s + k - V)//((V-k-1)V + 2k))
         f=V-k
-        a=(f*(1-total+(W-1))+(k-1)*(total))//(f+k*(V-1))
+        #a=(f*(1-total+(W-1))+(k-1)*(total))//(f+k*(V-1))
         den=lcm(s, denominator(a))
                 #a = ((V-k)W + (2k -V-1)total)//((V-k)W + (k-1)V) -- another possibility
         if a<=1//3
@@ -69,40 +78,45 @@ else
             end
             return ans
         else
-            if vint1(m,s,a)
+            if vint1(m,s,a)==0
                 if proof
                     return intproof(m,s,a,true)
                 end
-                ans = fracstring(a, den)
-                return ans
+            ans = fracstring(a, den)
+            return ans
+
             else
-                return "v-int does not verify alpha"
+                if proof
+                    return intproof(m,s,a,true)
+                end
+            return -1 #int failed, could not find conclusive alpha
+
             end
         end
     else
-        return "# of V shares = # of V-1 shares, therefore we can use FC to solve this"
+        return -1
     end
 
 end
 end
 
-
+#inputting m,s,a, program will verify if a works with the half method - outputs 0 if vhalf works, -1 if it doesn't work
 function vint1(m, s, a, proof::Bool=false)
-V, W, Vnum, r = sv(m,s)
+V, W, Vnum, Wnum = sv(m,s)
 
 total=m//s
 lowerproof= 1-(total*(1//(V-2)))
 upperproof=(total)*(1//(V+1))
 
-Wshares=W*r
+Wshares=W*Wnum
 Vshares=V*Vnum
 
 if lowerproof>a ||upperproof >a #checking to see if v-conjecture works
-    return false
+    return -1
 elseif a<1//3||a>1//2  #checks to see if a bounds are correct
-    return false
+    return -1
 elseif m%s==0||m<s #checks to see if m&s are incompatible with int
-    return false
+    return -1
 else
 
 #cases
@@ -112,57 +126,39 @@ abuddy = 1-a
 xbuddy = 1-x
 ybuddy = 1-y
 
-check1 = (total-x)*(1//(V-1))
-check2= 1-(total-y)*(1//(W-1))
+#=alpha1 = (total-x)*(1//(V-1))
+alpha2= 1-(total-y)*(1//(W-1))=#
 
-if check1!=a ||check2!=a
-    return false
-elseif x>y
-    return false
+#=f alpha1!=a ||alpha2!=a
+    return false=#
+if x>y
+    return -1
 elseif x==a || y==(1-a)
-    return false
+    return -1
 else
 
 
 if Wshares > Vshares #according to VV conjecture the gap will exist in the Wshares
     newgapshr= Wshares-Vshares
 
-    #calculating minimum i to create contradiction for largeshares
-    i=0
-    j=0
-    key1=0
-    key2=0
+#checking if shares add up to m/s
 
-    for i=1:W
-        if i*r<Vshares
-            i+=1
-        else
-            key1=i
-            break
-        end
-    end
+#defining variables
+ubmin=Int64(floor(Vshares/Wnum)) #upper bound for # of W largeshares
+lbmin = Int64(floor((newgapshr)/Wnum)) #lower bound for # of W smallshares
 
-    #minimum j for contradiction in smallshares
-    for j=1:W
-        if j*r<newgapshr
-            j+=1
-        else
-            key2=j
-            break
-        end
-    end
 
-    check1 = (W-key1+1)*(ybuddy)+(key1-1)*(abuddy)
-    check2 = (key2-1)*xbuddy+(W-key2+1)*y #not sure if this algorithm is correct
+#checking for a contradiction
+check1 =(W-ubmin)*(ybuddy)+(ubmin)*abuddy #looking for a contradiction in largeshaes
+check2 = (W-lbmin)*xbuddy+(lbmin)*a #looking for a contradiction in smallshares
 
-    #case3 - do shares total up to m/s?
 
     if check1<=total
-        return true
-    elseif check2<=total
-        return true
+        return 0
+    elseif check2>=total
+        return 0
     else
-        return false
+        return -1
     end
 
 
@@ -170,44 +166,24 @@ if Wshares > Vshares #according to VV conjecture the gap will exist in the Wshar
 
     newgapshr=Vshares-Wshares
 
-    #calculating minimum i to create contradiction in largeshares
-    i=0
-    j=0
-    key1=0
-    key2=0
-    for i=1:V
-        if i*Vnum<=newgapshr
-            i+=1
-        else
-            key1=i
-        break
-        end
-    end
-
-    #calculating minimum j for contradiction in smallshares
-    for j=1:V
-        if j*Vnum<=newgapshwnum
-            j+=1
-        else
-            key1=j
-        break
-        end
-    end
+    #defining variables
+    ubmin = Int64(floor(newgapshr/Vnum))
+    lbmin = Int64(floor(Wshares/Vnum))
 
     #case 3: do shares total up to m/s?
-    check1 = (V-key1+1)*ybuddy+(key1-1)*x
-    check2=(V-key2+1)*a+(key2-1)*xbuddy #not sure if algorithm is correct
+    check1 = (V-ubmin)*y+(ubmin)*x
+    check2=(V-lbmin)*xbuddy+(lbmin)*a
 
     if check1<=total
-        return true
-    elseif check2<=total
-        return true
+        return 0
+    elseif check2>=total
+        return 0
     else
-        return false
+        return -1
     end
 
     else
-        return false
+        return -1
 
     end
     end
