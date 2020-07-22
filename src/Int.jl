@@ -8,11 +8,11 @@ include("intproof.jl")
 export intproof
 
 function int(m,s, proof::Bool=false)
-V, W, q, r = sv(m,s)
+V, W, Vnum, Wnum = sv(m,s)
 
 total = m//s
-Wshares=W*r
-Vshares=V*q
+Wshares=W*Wnum
+Vshares=V*Vnum
 
 #format
 
@@ -25,10 +25,11 @@ elseif m<s
 else
 
     if Wshares>Vshares
+        newgap = Wshares-Vshares
         newdown1=1-total+(W-1)
         newdown2=1-total
-        ubmin=Int64(floor(Vshares/r))
-        lbmin = Int64(floor((Wshares-Vshares)/r)
+        ubmin=Int64(floor(Vshares/Wnum)) #upper bound for # of W largeshares
+        lbmin = Int64(floor((newgap)/Wnum)) #lower bound for # of W smallshares
         f=W-ubmin
         a1= (ubmin+f*newdown1-total)//(ubmin+f*(W-1))
         a2=(total-(V-f)*(newdown2)-(f-1)*(1-newdown1))//((V-f)*(V-1)-(f-1)*(W-1))
@@ -56,7 +57,7 @@ else
         end
 
     elseif Vshares>Wshares
-        k=Int64(floor((Vshares-Wshares)/q))
+        k=Int64(floor((Vshares-Wshares)/Vnum))
         f=V-k
         a=(f*(1-total+(W-1))+(k-1)*(total))//(f+k*(V-1))
         den=lcm(s, denominator(a))
@@ -87,14 +88,14 @@ end
 
 
 function vint1(m, s, a, proof::Bool=false)
-V, W, q, r = sv(m,s)
+V, W, Vnum, r = sv(m,s)
 
 total=m//s
 lowerproof= 1-(total*(1//(V-2)))
 upperproof=(total)*(1//(V+1))
 
 Wshares=W*r
-Vshares=V*q
+Vshares=V*Vnum
 
 if lowerproof>a ||upperproof >a #checking to see if v-conjecture works
     return false
@@ -175,7 +176,7 @@ if Wshares > Vshares #according to VV conjecture the gap will exist in the Wshar
     key1=0
     key2=0
     for i=1:V
-        if i*q<=newgapshr
+        if i*Vnum<=newgapshr
             i+=1
         else
             key1=i
@@ -185,7 +186,7 @@ if Wshares > Vshares #according to VV conjecture the gap will exist in the Wshar
 
     #calculating minimum j for contradiction in smallshares
     for j=1:V
-        if j*q<=newgapshr
+        if j*Vnum<=newgapshwnum
             j+=1
         else
             key1=j
@@ -211,8 +212,4 @@ if Wshares > Vshares #according to VV conjecture the gap will exist in the Wshar
     end
     end
     end
-end
-
-
-
 end
