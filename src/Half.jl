@@ -49,13 +49,14 @@ end
 end
 end
 
+#taking m,s will use half method to output upper bound for alpha, outputs -1 if no alpha is found
 function half(m::Int64, s::Int64, proof::Bool=false)
 
 #input errors
 if m % s==0
-        return false
+        return "1"
 elseif m < s
-    return false
+    return "Input muffins > students"
 else
 
 #V-conjecture
@@ -70,7 +71,7 @@ if W*Wshr>V*Vshr
         if proof
             return halfproof(m,s,alpha1, true)
         end
-        a = fracstring(alpha1, 3)
+        a = fracstring(1//3, 3)
         return a
     else
         a=alpha1

@@ -65,12 +65,10 @@ else
 
         j = Int64(floor((Vshares-Wshares)/Vnum))
         k=Int64(floor((Wshares/Vnum)))
-        a = min(((V-j)W + (2j -V-1)m//s)//((V-j)W + (j-1)V),    # Value for alpha derived by solving f(1-x) + (V-f)(1-y) = m/s
+        a = min(((V-j)W + (2j -V-1)m//s)//((V-j)W + (j-1)V),
                     ((V-k+1)m//s + k - V)//((V-k-1)V + 2k))
         f=V-k
-        #a=(f*(1-total+(W-1))+(k-1)*(total))//(f+k*(V-1))
         den=lcm(s, denominator(a))
-                #a = ((V-k)W + (2k -V-1)total)//((V-k)W + (k-1)V) -- another possibility
         if a<=1//3
             ans=fracstring(1//3, 3)
             if proof
@@ -101,7 +99,7 @@ end
 end
 
 #inputting m,s,a, program will verify if a works with the half method - outputs 0 if vhalf works, -1 if it doesn't work
-function vint1(m, s, a, proof::Bool=false)
+function vint1(m, s, a)
 V, W, Vnum, Wnum = sv(m,s)
 
 total=m//s
@@ -131,7 +129,7 @@ alpha2= 1-(total-y)*(1//(W-1))=#
 
 #=f alpha1!=a ||alpha2!=a
     return false=#
-if x>y
+if x>y||x<a||y>1-a
     return -1
 elseif x==a || y==(1-a)
     return -1
@@ -147,10 +145,9 @@ if Wshares > Vshares #according to VV conjecture the gap will exist in the Wshar
 ubmin=Int64(floor(Vshares/Wnum)) #upper bound for # of W largeshares
 lbmin = Int64(floor((newgapshr)/Wnum)) #lower bound for # of W smallshares
 
-
 #checking for a contradiction
 check1 =(W-ubmin)*(ybuddy)+(ubmin)*abuddy #looking for a contradiction in largeshaes
-check2 = (W-lbmin)*xbuddy+(lbmin)*a #looking for a contradiction in smallshares
+check2 = (W-lbmin)*xbuddy+(lbmin)*y #looking for a contradiction in smallshares
 
 
     if check1<=total
@@ -162,7 +159,7 @@ check2 = (W-lbmin)*xbuddy+(lbmin)*a #looking for a contradiction in smallshares
     end
 
 
-    elseif Wshares<Vshares
+elseif Wshares<Vshares
 
     newgapshr=Vshares-Wshares
 
@@ -171,8 +168,9 @@ check2 = (W-lbmin)*xbuddy+(lbmin)*a #looking for a contradiction in smallshares
     lbmin = Int64(floor(Wshares/Vnum))
 
     #case 3: do shares total up to m/s?
-    check1 = (V-ubmin)*y+(ubmin)*x
+    check1 = (V-ubmin)*ybuddy+(ubmin)*x
     check2=(V-lbmin)*xbuddy+(lbmin)*a
+
 
     if check1<=total
         return 0
