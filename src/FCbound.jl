@@ -1,13 +1,8 @@
 # FC bound, Antara Hebbar
-function fc(muffins, students)
+include("text.jl")
+export fracstring
 
-if muffins>students
-    m=muffins
-    s=students
-else
-    m=students
-    s=muffins
-end
+function fc(m, s)
 
 #FC calculations
 V = (2 * m) / s
@@ -15,18 +10,18 @@ minceil=m//(Int64(s * ceil(V)))
 minfloor=1-(m//(Int64(s * floor(V))))
 lowerbound=min(minceil, minfloor)
 ans=max(1//3,lowerbound)
-
+den = lcm(s, denominator(ans))
+ansS = fracstring(ans, den)
 
 #output
-if muffins%students==0
+if m%s==0
     return 1
-elseif muffins<students
-    newans=(muffins//students)*ans
-    return newans
-elseif muffins>students
-    return ans
+elseif m<s
+    return false #cannot m<s
+elseif m>s
+    return ansS
 else
-    return "error"
+    return false
 
 end
 end
