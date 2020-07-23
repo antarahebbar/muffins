@@ -7,20 +7,25 @@ export findend, sv
 include("text.jl")
 export fracstring
 
-# this program gives a proof of an f(m,s,alpha) input, using the half method
+# gives a proof and interval diagram of half(m,s,alpha)
 function halfproof(m::Int64, s::Int64, a, proof::Bool=true)
-output=false
+
+output=false #boolean variable used to determine to output a diagram
 
 
 if proof
-total=m//s
-V,W,Vshr,Wshr = sv(m,s)
 
+#defining variables used in algorithms
+total=m//s
+V,W,Vshr,Wshr = sv(m,s) #type and number of shares
+
+#verifying if v-conejcture applies to f(m,s)
 lp= 1-(m//s)*(1//(V-2))
 lpbuddy=1-lp
 up=(m//s)*(1//(V+1))
 total=m//s
 
+#defining variables used in proof
 base1=(1//(V+1))
 base2=(1//(W-1))
 base3=(1//(V-1))
@@ -39,10 +44,9 @@ base1S=fracstring(base1, denominator(base1))
 base2S=fracstring(base2, denominator(base2))
 base3S=fracstring(base3, denominator(base3))
 
-#HALF
 
 
-#checking if m,s verifies V-Conjecture
+#proof - checking if m,s verifies V-Conjecture
 if lp>a||up>a
     printf("This case does not verify V-Conjecture, therefore it is impossible")
     printEnd()
@@ -75,10 +79,15 @@ Therefore, all possible shares sizes exist between [$aS, $aB].")
 #v-conjecture cases
 printHeader("CASEWORK:")
 printfT("Case 1", "Alice gets ≥ $(V+1) shares, then one of them is $totalS * $base1S = $upstr, which is ≤ $aS.")
-printfT("Case 2", "Bob gets ≤ $(V-2) shares, one of them is $totalS * $base2S = $lpB, Its buddy is $lpstr, which is ≤ $aS.")
 
-#solving for # of shares
+if (W-1)<=1&&m/s>1
+    printfT("Case 2", "Bob cannot have ≤$(W-1) shares since $totalS >1, so this case is impossible. ")
+else
+    printfT("Case 2", "Bob gets ≤ $(V-2) shares, one of them is $totalS * $base2S = $lpB, Its buddy is $lpstr, which is ≤ $aS.")
+end
 
+
+#solving for # of shares using v-conjecture
 printHeader("SOLVING FOR # OF SHARES")
 printfT("V-Conjecture", "Hence, the student has ≥ $V pieces or ≤ $W pieces.
 There are total $(Int(m*2)) pieces and $s students.", "", "($V)s_$V + ($W)s_$W = $(2*m)", "s_$V + s_$W = $s", "", "s_$V = $Vshr and s_$W = $Wshr. $Vshr students get $V pieces and $Wshr students get $W pieces.", "There are $(V*Vshr) $V -shares and $(W*Wshr) $W-shares.")
@@ -88,13 +97,15 @@ There are total $(Int(m*2)) pieces and $s students.", "", "($V)s_$V + ($W)s_$W =
 ((_, x,), (y,_)) = findend(m,s,a,V)
 
 #cases 3 and 4
-check1 = (total-x)*(1//(V-1))
-check2= 1-(total-y)*(1//(W-1))
-checkbuddy=1-check2
+
+#defining variables
 total1=total-x
 total2=total-y
+check1 = (total1)*(1//(V-1))
+check2= 1-(total2)*(1//(W-1))
+checkbuddy=1-check2
 
-#formatting
+#formatting into strings
 xS=fracstring(x, den)
 yS=fracstring(y, den)
 c1S=fracstring(check1, den)
@@ -103,8 +114,6 @@ cB=fracstring(checkbuddy, denominator(checkbuddy))
 total1s=fracstring(total1, denominator(total1))
 total2s=fracstring(total2, denominator(total2))
 
-#setting up for contradiction -- add this
-
 #v-conjecture error, derived alpha != input alpha
 if check1!=a ||check2!=a
     printf("Error with V-Conjecture, VHalf cannot verify alpha.")
@@ -112,23 +121,29 @@ if check1!=a ||check2!=a
 
 #verifying derived alpha is = to inputted alpha with v-conjecture
 else
-printHeader("CASEWORK CONTINUED: ")
-printfT("Case 3", "Alice has a $V share ≥ $xS. Alice's other $V shares add up to ≥ $totalS-$xS.
-Hence one of them is $total1s * $base3S = $c1S")
-printfT("Case 4", "Case 4: Bob is a $W share ≤ $yS. Bob's other shares add up to ≤ $totalS-$yS,
-hence one of them is $total2s* $base2S = $cB, whose buddy is $c2S")
 
+#diagram outputs if variable output is true
+if x==a && y==1-a
+    printf("Half method does not work for these intervals, Findend is inconclusive")
+    printEnd()
+elseif x!=a
+    printHeader("CONTUINING CASE ANLYSIS:")
+    printfT("Case 3", "Alice has a $V share ≥ $xS. Alice's other $V shares add up to ≥ $totalS-$xS.
+    Hence one of them is $total1s * $base3S = $c1S")
 
+elseif y!=(1-a)
+    printHeader("CONTUINING CASE ANALYSIS:")
+    printfT("Case 4", "Case 4: Bob is a $W share ≤ $yS. Bob's other shares add up to ≤ $totalS-$yS,
+    hence one of them is $total2s* $base2S = $cB, whose buddy is $c2S")
+else
+    printf("Half method does not work for these intervals, Findend is inconclusive")
+    printEnd()
+end
 
-#final proof, contradiction
 
 #diagram output
-if x==a ||y==1-a
-    printf("Half method does not work for these intervals")
-    printEnd()
-
-elseif x>a && y<1-a && x<y
-    printHeader("INTERVAL DIAGRAM: ")
+printHeader("INTERVAL DIAGRAM: ")
+if x>a && y<1-a && x<y
     printf("The following captures the previous statements: ")
     println("\n",
             interval(["(", aS],
@@ -165,7 +180,6 @@ if output
     "Of the cases that give a contradiction:", "", "α ≥ max($upstr, $lpstr, $aS).", "α≥ $aS & muffins($m, $s) ≤ α",
     "Therefore, we derive the upper bound: muffins($m, $s) ≤ $aS.")
 end
-
 end
 end
 

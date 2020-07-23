@@ -7,18 +7,19 @@ export fracstring
 include("formatj.jl")
 export printf, printfT, printHeader, findlast
 
+#given m,s,a program will output a proof that f(m,s) <= alpha using int method
 function intproof(m, s, a, proof::Bool=true)
 
 V, W, Vnum, Wnum = sv(m,s)
 
 if proof
 
+#defining variables
 total=m//s
 abuddy=1-a
-lowerproof= 1-(total*(1//(V-2)))
+lowerproof= 1-(total*(1//(V-2))) #verifying v-conjecture
 lpbuddy = 1-lowerproof
-upperproof=(total)*(1//(V+1))
-
+upperproof=(total)*(1//(V+1)) #verigying v-conjecture
 Wshares=W*Wnum
 Vshares=V*Vnum
 den=lcm(s, denominator(a))
@@ -54,10 +55,28 @@ printHeader("ASSUMPTIONS:")
 printfT("Theorem 2.6", "If there is an ($m, $s) procedure with smallest piece α > 1/3, there is an ($m, $s) procedure where every muffin is cut into 2 pieces. Hence, there are $(2*m) shares.")
 printfT("Buddies", "If there exists share size α, there also must exist a share size 1-α. All possible shares sizes exist between [$aS, $aB].")
 
-#verifying v-conjecture
+
+#findend
+((_, x), (y,_)) = findend(m,s,a,V)
+xbuddy = 1-x
+ybuddy = 1-y
+
+#verifying v-conjecture applies to f(m,s) and if findend produced conclusive intervals
 printHeader("CASEWORK:")
-printfT("V-Conjecture", "Case 1: If Alice has ≤ $(V-2) shares, a share is ≥ $(totalS) * $(1//(V-2)), which = $lpbuddyS. Its buddy is $lpS < $aS")
-printfT("V-Conjecture", "Case 2: If Bob has ≥ $(V+1) shares, a share is ≥ than $(total) * $(1//(V+1)), which = $upS. $upS < $aS")
+
+if x!=a
+    printfT("V-Conjecture", "Case 1: If Alice has ≤ $(V-2) shares, a share is ≥ $(totalS) * $(1//(V-2)), which = $lpbuddyS. Its buddy is $lpS < $aS")
+else
+    printf("Findend did not produce a conclusive interval, int failed.")
+    printEnd()
+end
+
+if y!=(1-a)
+    printfT("V-Conjecture", "Case 2: If Bob has ≥ $(V+1) shares, a share is ≥ than $(total) * $(1//(V+1)), which = $upS. $upS < $aS")
+else
+    printf("Findend did not produce a conclusive interval, int failed.")
+    printEnd()
+end
 
 #solving for shares
 printHeader("USING V-CONJECTURE TO SOLVE FOR # OF SHARES:")
@@ -68,13 +87,6 @@ printLine()
 printfT("V-Conjecture", "While s_$V is the number of $V-shares and s_$W is the number of $W-shares: ","", "($V)s_$V + ($W)s_$W = $(2*m)  (total shares) ", "s_$V + s_$W = $s  (total students)", "", "$Vnum students get $V pieces and $Wnum students get $W pieces. There are $Vshares $V-shares and $Wshares $W-shares.")
 println("")
 
-
-#cases
-
-((_, x), (y,_)) = findend(m,s,a,V)
-xbuddy = 1-x
-ybuddy = 1-y
-
 #format
 xS=fracstring(x, den)
 yS=fracstring(y, den)
@@ -82,7 +94,7 @@ xB=fracstring(xbuddy, den)
 yB=fracstring(ybuddy, den)
 
 if x>y
-    printf("Intervals are not disjoint, you should use half/fc to solve for alpha")
+    printf("Intervals are not disjoint, half/fc may be better methods to solve for alpha")
     printEnd()
 elseif x==a || y==(1-a)
     printf("Findend failed - there are no sharesizes other than alpha and 1-alpha. Intproof failed")
@@ -102,7 +114,8 @@ println("\n",
 printLine()
 printfT("Buddies", "Because there is a gap between $xS and $yS, there must also be a new gap between $yB and $xB.")
 
-output=false
+output=false #boolean operator used to produce a conclusion
+
 if Wshares > Vshares #according to VV conjecture the gap will exist in the Wshares
     newgapshr= Wshares-Vshares
 #defining the new gap
@@ -205,6 +218,8 @@ end
 if output
 printHeader("CONCLUSION: ")
 printfT("Final note", "Each possible case above derives a lower bound (alpha) through finding a contradiction, therefore: ", "", "muffins($m,$s)≤ α, , ∀ α ≥ $aS", "", "muffins($m,$s) ≤ $aS.")
+
+
 end
 
 

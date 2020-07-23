@@ -26,17 +26,20 @@ elseif m<s
     return "input m>s"
 else
 
-    if Wshares>Vshares
-        newgap = Wshares-Vshares
-        newdown1=1-total+(W-1)
-        newdown2=1-total
-        ubmin=Int64(floor(Vshares/Wnum)) #upper bound for # of W largeshares
-        lbmin = Int64(floor((newgap)/Wnum)) #lower bound for # of W smallshares
-        f=W-ubmin
-        a1= (ubmin+f*newdown1-total)//(ubmin+f*(W-1))
-        a2=(total-(V-f)*(newdown2)-(f-1)*(1-newdown1))//((V-f)*(V-1)-(f-1)*(W-1))
+if Wshares>Vshares #gap lies within Wshares
 
-        a = min(a1, a2)
+#defining variables
+    newgap = Wshares-Vshares
+    ubmin=Int64(floor(Vshares/Wnum)) #upper bound for # of W largeshares
+    lbmin = Int64(floor((newgap)/Wnum)) #lower bound for # of W smallshares
+    f=W-ubmin
+    a1= (((f)W - (f+1)m//s + ubmin)//((f-1)W + 2ubmin))
+    a2=((lbmin-1)W + (W -2lbmin+1)m//s)//(W^2 - lbmin)
+
+#solving for alpha
+    a = min(a1, a2)
+
+    #a<1//3 ? (a=1//3:a=a)
 
         if a<=1//3
             if vint1(m,s,1//3)==0
@@ -66,13 +69,19 @@ else
         end
         end
 
-    elseif Vshares>Wshares
+    elseif Vshares>Wshares #gap lies within Vshares
 
-        j = Int64(floor((Vshares-Wshares)/Vnum))
-        k=Int64(floor((Wshares/Vnum)))
-        a = min(((V-j)W + (2j -V-1)m//s)//((V-j)W + (j-1)V),
-                    ((V-k+1)m//s + k - V)//((V-k-1)V + 2k))
-        f=V-k
+#defining variables
+        ubmin = Int64(floor((Vshares-Wshares)/Vnum))
+        lbmin=Int64(floor((Wshares/Vnum)))
+        f =V-ubmin
+        k= V-lbmin
+
+    #solving for alpha
+        a = min(((f)W + (2*ubmin -V-1)m//s)//((f)W + (ubmin-1)V),
+                    ((k+1)m//s + lbmin - V)//((k-1)V + 2*lbmin))
+
+        #a<1//3 ? (a = 1//3 : a=a) could use this to simplify code
         den=lcm(s, denominator(a))
         if a<=1//3
             if vint1(m,s,1//3)
