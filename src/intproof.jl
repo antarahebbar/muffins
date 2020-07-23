@@ -137,12 +137,12 @@ check2 = (W-lbmin)*xbuddy+(lbmin)*y #looking for a contradiction in smallshares
 printHeader("CASE 3: FINDING A CONTRADICTION")
 if check1<=total
     printfT("Case 3.1", "Alice is a $W student. If she has $(ubmin+1) large shares, we get a contradiction - there are only $Wnum $W-students and $Vshares largeshares.")
-    printfT("Case 3.2", "If Alice had ≤ $(ubmin) largeshares, then she has < $(W-ubmin) * $(yB) + $((ubmin)*a) ≤ $totalS.", "However, since Alice gets less than $totalS, this case is impossible.")
+    printfT("Case 3.2", "If Alice had ≤ $(ubmin) largeshares, then she has $(W-ubmin) * $(yB) + $((ubmin)*a) ≤ $totalS.", "However, since Alice gets less than $totalS, this case is impossible.")
     output=true
 
 elseif check2>=total
     printfT("Case 3.1", "Alice is a $W student. If she has $(lbmin+1) smallshares, we get a contradiction:", "", "There are only $Wnum $W-students and $newgapshr smallshares.")
-    printfT("Case 3.2", "If Alice had ≤ $(lbmin) smallshares, then she has < $(W-lbmin) * $(xB) + $((lbmin)*a) ≥$totalS.", "", "However, since Alice gets more than $totalS, this case is impossible.")
+    printfT("Case 3.2", "If Alice had ≤ $(lbmin) smallshares, then she has $(W-lbmin) * $(xB) + $((lbmin)*a) ≥ $totalS.", "", "However, since Alice gets more than $totalS, this case is impossible.")
     output=true
 else
     printf("The totaling of sharesizes do not result in a contradiction. Alpha does not work")
@@ -184,12 +184,12 @@ check2=(V-lbmin)*xbuddy+(lbmin)*a
 
 if check1<=total
     printfT("Case 3.1", "Alice is a $V student. If Alice has $(ubmin+1) large shares, there is a contradiction:", "", "There are only $Vnum $V-students and $newgapshr largeshares.")
-    printfT("Case 3.2", "If she had ≤$(ubmin) largeshares, then she has < $(V-ubmin) * $(yS) + $(ubmin)*$xS ≤ $totalS.", "", "However, since Alice gets less than $totalS, this case is impossible.")
+    printfT("Case 3.2", "If she had ≤$(ubmin) largeshares, then she has $(V-ubmin) * $(yS) + $(ubmin)*$xS ≤ $totalS.", "", "However, since Alice gets less than $totalS, this case is impossible.")
     output=true
 
 elseif check2>=total
     printfT("Case 3.1", "Alice is a $V student. If Alice has $lbmin smallshares, there is a contradiction:", "", "There are there are only $Vnum $V-students and $Wshares smallshares.")
-    printfT("Case 3.2", "If she had ≤$(lbmin-1) smallshares, then she has < $(V-lbmin+1) * $(aS) + $(lbmin-1)*$xB) ≥ $totalS. Therefore alpha works.", "", "However, since Alice gets more than $totalS, this case is impossible.")
+    printfT("Case 3.2", "If she had ≤$(lbmin-1) smallshares, then she has $(V-lbmin+1) * $(aS) + $(lbmin-1)*$xB) ≥ $totalS. Therefore alpha works.", "", "However, since Alice gets more than $totalS, this case is impossible.")
     output=true
 
 else

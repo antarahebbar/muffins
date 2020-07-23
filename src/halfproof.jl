@@ -55,13 +55,13 @@ elseif a<1//3||a>1//2
     printf("Alpha must be greater than 1//3 and less than 1//2")
     printEnd()
 elseif a>1
-    println("Alpha must be a <=1")
+    println("Alpha must be a ≤1")
     printEnd()
 else
 
 #claim
 printHeader("CLAIM:")
-printf("There is a ($m, $s) procedure where the smallest piece is >= $aS.")
+printf("There is a ($m, $s) procedure where the smallest piece is ≥ $aS.")
 printLine()
 
 #assumptions
@@ -74,13 +74,13 @@ Therefore, all possible shares sizes exist between [$aS, $aB].")
 
 #v-conjecture cases
 printHeader("CASEWORK:")
-printfT("Case 1", "Alice gets >= $(V+1) shares, then one of them is $totalS * $base1S = $upstr, which is <= $aS.")
-printfT("Case 2", "Bob gets <= $(V-2) shares, one of them is $totalS * $base2S = $lpB, Its buddy is $lpstr, which is <= $aS.")
+printfT("Case 1", "Alice gets ≥ $(V+1) shares, then one of them is $totalS * $base1S = $upstr, which is ≤ $aS.")
+printfT("Case 2", "Bob gets ≤ $(V-2) shares, one of them is $totalS * $base2S = $lpB, Its buddy is $lpstr, which is ≤ $aS.")
 
 #solving for # of shares
 
 printHeader("SOLVING FOR # OF SHARES")
-printfT("V-Conjecture", "Hence, the student has >= $V pieces or <= $W pieces.
+printfT("V-Conjecture", "Hence, the student has ≥ $V pieces or ≤ $W pieces.
 There are total $(Int(m*2)) pieces and $s students.", "", "($V)s_$V + ($W)s_$W = $(2*m)", "s_$V + s_$W = $s", "", "s_$V = $Vshr and s_$W = $Wshr. $Vshr students get $V pieces and $Wshr students get $W pieces.", "There are $(V*Vshr) $V -shares and $(W*Wshr) $W-shares.")
 
 
@@ -113,9 +113,9 @@ if check1!=a ||check2!=a
 #verifying derived alpha is = to inputted alpha with v-conjecture
 else
 printHeader("CASEWORK CONTINUED: ")
-printfT("Case 3", "Alice has a $V share >= $xS. Alice's other $V shares add up to >= $totalS-$xS.
+printfT("Case 3", "Alice has a $V share ≥ $xS. Alice's other $V shares add up to ≥ $totalS-$xS.
 Hence one of them is $total1s * $base3S = $c1S")
-printfT("Case 4", "Case 4: Bob is a $W share <= $yS. Bob's other shares add up to <= $totalS-$yS,
+printfT("Case 4", "Case 4: Bob is a $W share ≤ $yS. Bob's other shares add up to ≤ $totalS-$yS,
 hence one of them is $total2s* $base2S = $cB, whose buddy is $c2S")
 
 
@@ -145,12 +145,12 @@ end
 #final proof, contradiction
 if x<=1//2 && V*Vshr>m
     printHeader("CONTRADICTION:")
-    printfT("Case 5", "There are more than $m shares that are <=1/2, making this case impossible.")
+    printfT("Case 5", "There are more than $m shares that are ≤1/2, making this case impossible.")
     output=true
 
 elseif y>=1/2 && W*Wshr>m
     printHeader("CONTRADICTION:")
-    printfT("Case 5", "There are more than $m shares that are >=1/2, making this case impossible")
+    printfT("Case 5", "There are more than $m shares that are ≥1/2, making this case impossible")
     output=true
 
 else
@@ -162,8 +162,8 @@ end
 if output
     printHeader("CONCLUSION:")
     printfT("Upper Bound", "The previous cases derive a lower bound for α.", "", "We are looking for α that contradicts the assumption that at most $m shares >1/2.", "",
-    "Of the cases that give a contradiction:", "", "α >= max($upstr, $lpstr, $aS).", "α>= $aS & muffins($m, $s) <= α",
-    "Therefore, we derive the upper bound: muffins($m, $s) <= $aS.")
+    "Of the cases that give a contradiction:", "", "α ≥ max($upstr, $lpstr, $aS).", "α≥ $aS & muffins($m, $s) ≤ α",
+    "Therefore, we derive the upper bound: muffins($m, $s) ≤ $aS.")
 end
 
 end

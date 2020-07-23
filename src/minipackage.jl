@@ -121,4 +121,6 @@ end
 
 end
 
+printf(alpha)
+
 end
