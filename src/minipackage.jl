@@ -1,4 +1,5 @@
-#problems with cases (16,13)
+#problems with cases (49,18), (68,13), (66,13)
+
 include("findproc2.jl")
 export findproc, vectorize, unpack, f, unionF, mapCat
 
@@ -25,7 +26,7 @@ export toFrac
 
 
 #given m,s, program will output min of half, int, and fc
-function mini(m::Int64, s::Int64)
+function muffins(m::Int64, s::Int64)
 
 alpha_fc = fc(m,s)
 

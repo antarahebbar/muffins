@@ -36,14 +36,19 @@ else
         a1= (ubmin+f*newdown1-total)//(ubmin+f*(W-1))
         a2=(total-(V-f)*(newdown2)-(f-1)*(1-newdown1))//((V-f)*(V-1)-(f-1)*(W-1))
 
-        if a1<=1//3||a2<=1//3
-            ans=fracstring(1//3, 3)
-            if proof
-                return intproof(m,s,1//3, true)
+        a = min(a1, a2)
+
+        if a<=1//3
+            if vint1(m,s,1//3)==0
+                ans=fracstring(1//3, 3)
+                return ans
+                if proof
+                    return intproof(m,s,1//3, true)
+                end
+            else
+                return -1
             end
-            return ans
         else
-            a = min(a1, a2)
             den=lcm(s, denominator(a))
 
             if vint1(m,s,a)==0 #vint worked
@@ -70,9 +75,13 @@ else
         f=V-k
         den=lcm(s, denominator(a))
         if a<=1//3
-            ans=fracstring(1//3, 3)
-            if proof
-                return intproof(m,s,1//3,true)
+            if vint1(m,s,1//3)
+                ans=fracstring(1//3, 3)
+                if proof
+                    return intproof(m,s,1//3,true)
+                end
+            else
+                return -1
             end
             return ans
         else
@@ -108,7 +117,6 @@ upperproof=(total)*(1//(V+1))
 
 Wshares=W*Wnum
 Vshares=V*Vnum
-
 if lowerproof>a ||upperproof >a #checking to see if v-conjecture works
     return -1
 elseif a<1//3||a>1//2  #checks to see if a bounds are correct
