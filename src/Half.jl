@@ -104,7 +104,10 @@ elseif W*Wshr<V*Vshr
         else
             return -1 #-1 is indicator of vhalf failing
         end
+
     end
+else
+    return -1
 end
 end
 end

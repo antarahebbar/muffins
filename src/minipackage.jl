@@ -1,3 +1,5 @@
+
+
 include("findproc.jl")
 export findproc, vectorize, unpack, f, unionF, mapCat
 
@@ -23,7 +25,7 @@ include("formatj.jl")
 export toFrac
 
 
-#given m,s, program will run floor-ceiling, half, and int methods and output the minimum, a proof, and solutions using findproc
+#given m,s, program will output min of half, int, and fc
 function muffins(m::Int64, s::Int64)
 
 alpha_fc = fc(m,s)
@@ -31,20 +33,20 @@ alpha_fc = fc(m,s)
 alpha_half = half(m,s)
 
 alpha_int = int(m,s)
+print(alpha_fc, alpha_half, alpha_int)
 
 
-verify = true #bool variable to see whether ouput qualifies for proof
+verify = true
 
-if m%s==0 #error if muffins divides into students
+if m%s==0
     return "The # of students divides into the # of muffins, so the answer is 1."
     verify=false
-
-elseif m<s||m<=0||s<=0 #errors with inputs
+elseif m<s||m<=0||s<=0
     return "M has to be greater than s, and both values should be >0."
     verify=false
 else
 
-#checking if any method did not get conclusive alpha, "2" signifies the method failed
+#checking if any method did not get conclusive alpha, 2 signifies the method failed
 alpha_int = alpha_int== -1 ? alpha_int = "2" : alpha_int=alpha_int
 alpha_half = alpha_half== -1 ? alpha_half = "2" : alpha_half=alpha_half
 alpha_fc = alpha_fc== -1 ? alpha_fc = "2" : alpha_fc=alpha_fc
@@ -60,17 +62,15 @@ alpha= min(fracfc, frachalf, fracint)
 den = lcm(s, denominator(alpha))
 alphaS=fracstring(alpha, den)
 
-if alpha==2//1 #if all methods fail, alpha should equal 2
+if alpha==2//1
     return "FC, Half, and INT failed. Minipackage does not work for muffins($m,$s)."
     verify = false
 
 else
 
-#outputting the minimum alpha of int, fc, half
 printHeader("DERIVED ALPHA:")
 printf("Mini package found that muffins($m,$s) <= $alphaS")
 
-#ouputs method(s) used
 printHeader("METHOD USED: ")
 
 methodhalf=false
@@ -104,16 +104,16 @@ end
 end
 
 
-#outputting a proof for half and int --> if fc was used, no proof will be outputted
+#outputting a proof for half and int
 printHeader("PROOF: ")
 if methodhalf
-    return halfproof(m,s,alpha), findproc(m,s,alpha) #returns halfproof and findproc solutions
+    return halfproof(m,s,alpha), findproc(m,s,alpha)
 
 elseif methodint
-    return intproof(m,s,alpha), findproc(m,s,alpha) #returns intproof and findproc solutions
+    return intproof(m,s,alpha), findproc(m,s,alpha)
 
 else
-    print("Since Floor Ceiling can be used to derive alpha, no proof is necessary."), findproc(m,s,alpha) #returns findproc if int/half don't work
+    print("Since Floor Ceiling can be used to derive alpha, no proof is necessary."), findproc(m,s,alpha)
 
 end
 
