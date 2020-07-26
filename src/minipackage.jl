@@ -1,5 +1,3 @@
-
-
 include("findproc.jl")
 export findproc, vectorize, unpack, f, unionF, mapCat
 
@@ -33,8 +31,6 @@ alpha_fc = fc(m,s)
 alpha_half = half(m,s)
 
 alpha_int = int(m,s)
-print(alpha_fc, alpha_half, alpha_int)
-
 
 verify = true
 
@@ -59,8 +55,7 @@ frachalf = toFrac(alpha_half)
 
 #finding min of three methods
 alpha= min(fracfc, frachalf, fracint)
-den = lcm(s, denominator(alpha))
-alphaS=fracstring(alpha, den)
+alphaS=fracstring(alpha, denominator(alpha))
 
 if alpha==2//1
     return "FC, Half, and INT failed. Minipackage does not work for muffins($m,$s)."
@@ -68,36 +63,32 @@ if alpha==2//1
 
 else
 
-printHeader("DERIVED ALPHA:")
-printf("Mini package found that muffins($m,$s) <= $alphaS")
-
-printHeader("METHOD USED: ")
 
 methodhalf=false
 methodint=false
 
 #if more than one method was used
 if fracfc==alpha&&frachalf==alpha
-    printf("The FC and Half methods can be used to derive alpha.")
+    printf("The FC and Half methods found that muffins($m,$s) <= $alphaS")
 elseif fracfc==alpha&&fracint==alpha
-    printf("The FC and Int methods can be used to derive alpha.")
+    printf("The FC and Int methods found that muffins($m,$s) <= $alphaS")
 elseif frachalf==alpha&&fracint==alpha
-    printf("The Int and Half methods can be used to derive alpha.")
+    printf("The Int and Half methods found that muffins($m,$s) <= $alphaS")
     methodhalf=true
     methodint=true
 elseif frachalf==alpha&&fracint==alpha&&fracfc==alpha
-    printf("Int, Half, and FC all outputted the same alpha. Any of these methods can be used.")
+    printf("Int, Half, and FC all found that muffins($m,$s) <= $alphaS")
 else
 
 #if only one method was used
 if fracfc==alpha
-    printf("The Floor Ceiling method was used to derive alpha.")
+    printf("The Floor Ceiling method found that muffins($m,$s) <= $alphaS")
 elseif alpha==fracint
     methodint=true
-    printf("The INT method was used to derive alpha.")
+    printf("The INT method found that muffins($m,$s) <= $alphaS")
 elseif alpha==frachalf
     methodhalf=true
-    printf("The Half method was used to derive alpha")
+    printf("The Half method found that muffins($m,$s) <= $alphaS")
 else
     printf("Mini package failed, cannot find a method used to derive alpha")
 end

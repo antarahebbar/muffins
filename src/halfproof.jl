@@ -35,6 +35,7 @@ lpstr = fracstring(lp, denominator(lp))
 lpB=fracstring(lpbuddy, denominator(lpbuddy))
 upstr = fracstring(up, denominator(up))
 den = lcm(s, denominator(a))
+alpha = fracstring(a, denominator(a))
 aS = fracstring(a, den)
 aB=fracstring(1-a, den)
 
@@ -65,12 +66,13 @@ else
 
 #claim
 printHeader("CLAIM:")
-printf("There is a ($m, $s) procedure where the smallest piece is ≥ $aS.")
+printf("There is a ($m, $s) procedure where the smallest piece is ≥ $alpha.")
+printfT("Note", "Let the common denominator $den. Therefore, alpha will be referred to as $aS.")
 printLine()
 
 #assumptions
 printHeader("ASSUMPTIONS:")
-printfT("Theorem 2.6", "If there is an ($m, $s) procedure with smallest piece α > 1/3, there is an ($m, $s) procedure where every muffin is cut into 2 pieces.
+printfT("Determining muffin pieces", "If there is an ($m, $s) procedure with smallest piece α > 1/3, there is an ($m, $s) procedure where every muffin is cut into 2 pieces.
 Therefore there are $(2*m) total shares.")
 printfT("Buddies", "If there exists share size α, there also must exist a share size 1-α.
 Therefore, all possible shares sizes exist between [$aS, $aB].")
@@ -89,8 +91,8 @@ end
 
 #solving for # of shares using v-conjecture
 printHeader("SOLVING FOR # OF SHARES")
-printfT("V-Conjecture", "Hence, the student has ≥ $V pieces or ≤ $W pieces.
-There are total $(Int(m*2)) pieces and $s students.", "", "($V)s_$V + ($W)s_$W = $(2*m)", "s_$V + s_$W = $s", "", "s_$V = $Vshr and s_$W = $Wshr. $Vshr students get $V pieces and $Wshr students get $W pieces.", "There are $(V*Vshr) $V -shares and $(W*Wshr) $W-shares.")
+printf("Each student has ≥ $V pieces or ≤ $W pieces.")
+printfT("Solving for sharesizes" , "There are total $(Int(m*2)) pieces and $s students.", "", "($V)s_$V + ($W)s_$W = $(2*m)", "s_$V + s_$W = $s", "", "s_$V = $Vshr and s_$W = $Wshr. $Vshr students get $V pieces and $Wshr students get $W pieces.", "There are $(V*Vshr) $V -shares and $(W*Wshr) $W-shares.")
 
 
 #findend to solve for intervals
@@ -133,7 +135,7 @@ elseif x!=a
 
 elseif y!=(1-a)
     printHeader("CONTUINING CASE ANALYSIS:")
-    printfT("Case 4", "Case 4: Bob is a $W share ≤ $yS. Bob's other shares add up to ≤ $totalS-$yS,
+    printfT("Case 4", "Bob is a $W share ≤ $yS. Bob's other shares add up to ≤ $totalS-$yS,
     hence one of them is $total2s* $base2S = $cB, whose buddy is $c2S")
 else
     printf("Half method does not work for these intervals, Findend is inconclusive")

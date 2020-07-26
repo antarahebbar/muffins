@@ -28,6 +28,7 @@ den=lcm(s, denominator(a))
 lpS=fracstring(lowerproof, denominator(lowerproof))
 upS=fracstring(upperproof, denominator(upperproof))
 aS=fracstring(a, den)
+alpha = fracstring(a, denominator(a))
 totalS=fracstring(total, den)
 aB=fracstring(abuddy, den)
 lpbuddyS = fracstring(lpbuddy, denominator(lpbuddy))
@@ -48,11 +49,12 @@ else
 
 #claim
 printHeader("CLAIM:")
-printf("There is a ($m, $s) procedure where the smallest piece is ≥ $aS.")
+printf("There is a ($m, $s) procedure where the smallest piece is ≥ $alpha.")
+printfT("Note", "Let the common denominator $den. Therefore, alpha will be referred to as $aS.")
 
 #assumptions
 printHeader("ASSUMPTIONS:")
-printfT("Theorem 2.6", "If there is an ($m, $s) procedure with smallest piece α > 1/3, there is an ($m, $s) procedure where every muffin is cut into 2 pieces. Hence, there are $(2*m) shares.")
+printfT("Determining muffin pieces", "If there is an ($m, $s) procedure with smallest piece α > 1/3, there is an ($m, $s) procedure where every muffin is cut into 2 pieces. Hence, there are $(2*m) shares.")
 printfT("Buddies", "If there exists share size α, there also must exist a share size 1-α. All possible shares sizes exist between [$aS, $aB].")
 
 
@@ -65,26 +67,26 @@ ybuddy = 1-y
 printHeader("CASEWORK:")
 
 if x!=a
-    printfT("V-Conjecture", "Case 1: If Alice has ≤ $(V-2) shares, a share is ≥ $(totalS) * $(1//(V-2)), which = $lpbuddyS. Its buddy is $lpS < $aS")
+    printfT("Case 1", "If Alice has ≤ $(V-2) shares, a share is ≥ $(totalS) * $(1//(V-2)), which = $lpbuddyS. Its buddy is $lpS < $aS")
 else
     printf("Findend did not produce a conclusive interval, int failed.")
     printEnd()
 end
 
 if y!=(1-a)
-    printfT("V-Conjecture", "Case 2: If Bob has ≥ $(V+1) shares, a share is ≥ than $(total) * $(1//(V+1)), which = $upS. $upS < $aS")
+    printfT("Case 2", "If Bob has ≥ $(V+1) shares, a share is ≥ than $(total) * $(1//(V+1)), which = $upS. $upS < $aS")
 else
     printf("Findend did not produce a conclusive interval, int failed.")
     printEnd()
 end
 
 #solving for shares
-printHeader("USING V-CONJECTURE TO SOLVE FOR # OF SHARES:")
-printf("Assuming the V-Conjecture, each student will get either $V or $W shares.")
+printHeader("SOLVING FOR # OF SHARES:")
+printf("Each student will get either $V or $W shares.")
 printLine()
 
 #number of shares
-printfT("V-Conjecture", "While s_$V is the number of $V-shares and s_$W is the number of $W-shares: ","", "($V)s_$V + ($W)s_$W = $(2*m)  (total shares) ", "s_$V + s_$W = $s  (total students)", "", "$Vnum students get $V pieces and $Wnum students get $W pieces. There are $Vshares $V-shares and $Wshares $W-shares.")
+printfT("Determining sharesizes", "While s_$V is the number of $V-shares and s_$W is the number of $W-shares: ","", "($V)s_$V + ($W)s_$W = $(2*m)  (total shares) ", "s_$V + s_$W = $s  (total students)", "", "$Vnum students get $V pieces and $Wnum students get $W pieces. There are $Vshares $V-shares and $Wshares $W-shares.")
 println("")
 
 #format
@@ -149,13 +151,13 @@ check2 = (W-lbmin)*xbuddy+(lbmin)*y #looking for a contradiction in smallshares
 #case3 - do shares total up to m/s?
 printHeader("CASE 3: FINDING A CONTRADICTION")
 if check1<=total
-    printfT("Case 3.1", "Alice is a $W student. If she has $(ubmin+1) large shares, we get a contradiction - there are only $Wnum $W-students and $Vshares largeshares.")
-    printfT("Case 3.2", "If Alice had ≤ $(ubmin) largeshares, then she has $(W-ubmin) * $(yB) + $((ubmin)*a) ≤ $totalS.", "However, since Alice gets less than $totalS, this case is impossible.")
+    printfT("Case 3.1", "If Alice is a $W student and she has ≤$(ubmin) largeshares, then she has $(W-ubmin) * $(yB) + $(ubmin)*$a ≤ $totalS.", "", "However, since Alice gets less than $totalS, this case is impossible.")
+    printfT("Case 3.2", "If all $W-students have $(ubmin+1) large shares, there will be a total of $((ubmin+1)*(Wnum)) shares.", "", "This is a contradiction because there are only $Wnum $W-students and $Vshares largeshares.")
     output=true
 
 elseif check2>=total
-    printfT("Case 3.1", "Alice is a $W student. If she has $(lbmin+1) smallshares, we get a contradiction:", "", "There are only $Wnum $W-students and $newgapshr smallshares.")
-    printfT("Case 3.2", "If Alice had ≤ $(lbmin) smallshares, then she has $(W-lbmin) * $(xB) + $((lbmin)*a) ≥ $totalS.", "", "However, since Alice gets more than $totalS, this case is impossible.")
+    printfT("Case 3.1", "If Alice had ≤ $(lbmin) smallshares, then she has $(W-lbmin) * $(xB) + $(lbmin) * $aS ≥ $totalS.", "", "However, since Alice gets more than $totalS, this case is impossible.")
+    printfT("Case 3.2", "If all $W-students have $(lbmin+1) smallshares, there will be a total of $((lbmin+1)*(Wnum)) shares.", "", "This is a contradiction because there are only $Wnum $W-students and $newgapshr smallshares.")
     output=true
 else
     printf("The totaling of sharesizes do not result in a contradiction. Alpha does not work")
@@ -196,13 +198,13 @@ check1 = (V-ubmin)*ybuddy+(ubmin)*x
 check2=(V-lbmin)*xbuddy+(lbmin)*a
 
 if check1<=total
-    printfT("Case 3.1", "Alice is a $V student. If Alice has $(ubmin+1) large shares, there is a contradiction:", "", "There are only $Vnum $V-students and $newgapshr largeshares.")
-    printfT("Case 3.2", "If she had ≤$(ubmin) largeshares, then she has $(V-ubmin) * $(yS) + $(ubmin)*$xS ≤ $totalS.", "", "However, since Alice gets less than $totalS, this case is impossible.")
+    printfT("Case 3.1", "If Alice is a $V student and she has ≤$(ubmin) largeshares, then she has $(V-ubmin) * $(yS) + $(ubmin)*$xS ≤ $totalS.", "", "However, since Alice gets less than $totalS, this case is impossible.")
+    printfT("Case 3.2", "If all $V-students have $(ubmin+1) large shares, there will be a total of $((ubmin+1)*(Vnum)) shares.", "", "This is a contradiction because there are only $Vnum $V-students and $newgapshr largeshares.")
     output=true
 
 elseif check2>=total
-    printfT("Case 3.1", "Alice is a $V student. If Alice has $lbmin smallshares, there is a contradiction:", "", "There are there are only $Vnum $V-students and $Wshares smallshares.")
-    printfT("Case 3.2", "If she had ≤$(lbmin-1) smallshares, then she has $(V-lbmin+1) * $(aS) + $(lbmin-1)*$xB) ≥ $totalS. Therefore alpha works.", "", "However, since Alice gets more than $totalS, this case is impossible.")
+    printfT("Case 3.1", "If Alice is a $V student and she has ≤$(lbmin) smallshares, then she has $(V-lbmin) * $(aS) + $(lbmin)*$xB ≥ $totalS.", "", "However, since Alice gets more than $totalS, this case is impossible.")
+    printfT("Case 3.2", "If all $V-students have $(lbmin+1) smallshares, there will be a total of $((lbmin+1)*(Vnum)) shares.", "", "This is a contradiction because there are only $Vnum $V-students and $Wshares smallshares.")
     output=true
 
 else

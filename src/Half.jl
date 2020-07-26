@@ -1,3 +1,5 @@
+#problems with findproc for 17,12
+
 include("text.jl")
 export fracstring
 
