@@ -1,11 +1,7 @@
-include("formatj.jl")
-export printf, printfT, printHeader, findlast, printEnd, center
+import .Format
 
 include("tools.jl")
 export findend, sv
-
-include("text.jl")
-export fracstring
 
 # gives a proof and interval diagram of half(m,s,alpha)
 function halfproof(m::Int64, s::Int64, a, proof::Bool=true)
@@ -31,19 +27,19 @@ base2=(1//(W-1))
 base3=(1//(V-1))
 
 #formatting
-lpstr = fracstring(lp, denominator(lp))
-lpB=fracstring(lpbuddy, denominator(lpbuddy))
-upstr = fracstring(up, denominator(up))
+lpstr = formatFrac(lp, denominator(lp))
+lpB=formatFrac(lpbuddy, denominator(lpbuddy))
+upstr = formatFrac(up, denominator(up))
 den = lcm(s, denominator(a))
-alpha = fracstring(a, denominator(a))
-aS = fracstring(a, den)
-aB=fracstring(1-a, den)
+alpha = formatFrac(a, denominator(a))
+aS = formatFrac(a, den)
+aB=formatFrac(1-a, den)
 
-totalS=fracstring(total, den)
+totalS=formatFrac(total, den)
 
-base1S=fracstring(base1, denominator(base1))
-base2S=fracstring(base2, denominator(base2))
-base3S=fracstring(base3, denominator(base3))
+base1S=formatFrac(base1, denominator(base1))
+base2S=formatFrac(base2, denominator(base2))
+base3S=formatFrac(base3, denominator(base3))
 
 
 
@@ -108,13 +104,13 @@ check2= 1-(total2)*(1//(W-1))
 checkbuddy=1-check2
 
 #formatting into strings
-xS=fracstring(x, den)
-yS=fracstring(y, den)
-c1S=fracstring(check1, den)
-c2S=fracstring(check2, den)
-cB=fracstring(checkbuddy, denominator(checkbuddy))
-total1s=fracstring(total1, denominator(total1))
-total2s=fracstring(total2, denominator(total2))
+xS=formatFrac(x, den)
+yS=formatFrac(y, den)
+c1S=formatFrac(check1, den)
+c2S=formatFrac(check2, den)
+cB=formatFrac(checkbuddy, denominator(checkbuddy))
+total1s=formatFrac(total1, denominator(total1))
+total2s=formatFrac(total2, denominator(total2))
 
 #v-conjecture error, derived alpha != input alpha
 if check1!=a ||check2!=a

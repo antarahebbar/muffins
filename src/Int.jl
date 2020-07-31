@@ -1,14 +1,14 @@
 include("tools.jl")
 export sv, findend
 
-include("text.jl")
-export fracstring
+include("format.jl")
+export formatFrac
 
 include("intproof.jl")
 export intproof
 
 
-#taking m,s, program will output int if vint verifies it, will also ouput optional proof
+#Function takes (m,s) and outputs alpha if vint verifies it, can also output optional proof
 function int(m,s, proof::Bool=false)
 V, W, Vnum, Wnum = sv(m,s)
 
@@ -40,7 +40,7 @@ else
 
         if a<=1//3
             if vint1(m,s,1//3)==0
-                ans=fracstring(1//3, 3)
+                ans=formatFrac(1//3, 3)
                 return ans
                 if proof
                     return intproof(m,s,1//3, true)
@@ -56,7 +56,7 @@ else
                     return intproof(m,s,a,true)
                 end
 
-                ans=fracstring(a, den)
+                ans=formatFrac(a, den)
                 return ans
             else
                 if proof
@@ -76,7 +76,7 @@ else
         den=lcm(s, denominator(a))
         if a<=1//3
             if vint1(m,s,1//3)
-                ans=fracstring(1//3, 3)
+                ans=formatFrac(1//3, 3)
                 if proof
                     return intproof(m,s,1//3,true)
                 end
@@ -89,7 +89,7 @@ else
                 if proof
                     return intproof(m,s,a,true)
                 end
-            ans = fracstring(a, den)
+            ans = formatFrac(a, den)
             return ans
 
             else
@@ -107,7 +107,7 @@ else
 end
 end
 
-#inputting m,s,a, program will verify if a works with the half method - outputs 0 if vhalf works, -1 if it doesn't work
+#Helper function for int, inputs (m,s,a) and verifies if alpha works- outputs 0 if true, -1 if false
 function vint1(m, s, a)
 V, W, Vnum, Wnum = sv(m,s)
 

@@ -1,5 +1,5 @@
-include("findproc.jl")
-export findproc, vectorize, unpack, f, unionF, mapCat
+
+import .Format
 
 include("FCBound.jl")
 export fc
@@ -19,8 +19,8 @@ export vint1, int
 include("intproof.jl")
 export intproof
 
-include("formatj.jl")
-export toFrac
+include("format.jl")
+export toFrac, formatFrac
 
 
 #given m,s, program will output min of half, int, and fc
@@ -55,7 +55,7 @@ frachalf = toFrac(alpha_half)
 
 #finding min of three methods
 alpha= min(fracfc, frachalf, fracint)
-alphaS=fracstring(alpha, denominator(alpha))
+alphaS=formatFrac(alpha, denominator(alpha))
 
 if alpha==2//1
     return "FC, Half, and INT failed. Minipackage does not work for muffins($m,$s)."

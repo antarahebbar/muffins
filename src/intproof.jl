@@ -1,11 +1,8 @@
 include("tools.jl")
 export findend, sv
 
-include("text.jl")
-export fracstring
-
-include("formatj.jl")
-export printf, printfT, printHeader, findlast
+include("format.jl")
+export printf, printfT, printHeader, findlast, formatFrac
 
 #given m,s,a program will output a proof that f(m,s) <= alpha using int method
 function intproof(m, s, a, proof::Bool=true)
@@ -25,13 +22,13 @@ Vshares=V*Vnum
 den=lcm(s, denominator(a))
 
 #formatting into fractions
-lpS=fracstring(lowerproof, denominator(lowerproof))
-upS=fracstring(upperproof, denominator(upperproof))
-aS=fracstring(a, den)
-alpha = fracstring(a, denominator(a))
-totalS=fracstring(total, den)
-aB=fracstring(abuddy, den)
-lpbuddyS = fracstring(lpbuddy, denominator(lpbuddy))
+lpS=formatFrac(lowerproof, denominator(lowerproof))
+upS=formatFrac(upperproof, denominator(upperproof))
+aS=formatFrac(a, den)
+alpha = formatFrac(a, denominator(a))
+totalS=formatFrac(total, den)
+aB=formatFrac(abuddy, den)
+lpbuddyS = formatFrac(lpbuddy, denominator(lpbuddy))
 
 if lowerproof>a ||upperproof >a
     printf("Alpha does not comply with v-conjecture, V-Int failed")
@@ -90,10 +87,10 @@ printfT("Determining sharesizes", "While s_$V is the number of $V-shares and s_$
 println("")
 
 #format
-xS=fracstring(x, den)
-yS=fracstring(y, den)
-xB=fracstring(xbuddy, den)
-yB=fracstring(ybuddy, den)
+xS=formatFrac(x, den)
+yS=formatFrac(y, den)
+xB=formatFrac(xbuddy, den)
+yB=formatFrac(ybuddy, den)
 
 if x>y
     printf("Intervals are not disjoint, half/fc may be better methods to solve for alpha")

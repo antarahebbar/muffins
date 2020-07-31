@@ -1,8 +1,5 @@
 #problems with findproc for 17,12
-
-include("text.jl")
-export fracstring
-
+import .Format
 
 include("tools.jl")
 export sv, findend
@@ -73,7 +70,7 @@ if W*Wshr>V*Vshr
         if proof
             return halfproof(m,s,alpha1, true)
         end
-        a = fracstring(1//3, 3)
+        a = formatFrac(1//3, 3)
         return a
     else
         a=alpha1
@@ -81,7 +78,7 @@ if W*Wshr>V*Vshr
             if proof
                 return halfproof(m,s,a,true)
             end
-            a = fracstring(a, lcm(s, denominator(a)))
+            a = formatFrac(a, lcm(s, denominator(a)))
             return a
         else
             return -1 #-1 is indicator of half failing
@@ -93,7 +90,7 @@ elseif W*Wshr<V*Vshr
         if proof
             return halfproof(m,s,alpha2,true)
         end
-        a = fracstring(1//3, 3)
+        a = formatFrac(1//3, 3)
         return a
     else
         a=alpha2
@@ -101,7 +98,7 @@ elseif W*Wshr<V*Vshr
             if proof
                 return halfproof(m,s,a,true)
             end
-            a = fracstring(a, lcm(s, denominator(a)))
+            a = formatFrac(a, lcm(s, denominator(a)))
             return a
         else
             return -1 #-1 is indicator of vhalf failing

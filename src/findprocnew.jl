@@ -3,7 +3,7 @@
 using JuMP
 using Cbc
 
-include("format.jl")
+include("Formatj.jl")
 export printf, printfT, printHeader, findlast, center
 
 B = []
@@ -33,7 +33,7 @@ function findproc(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=1)
         L = b - 2a + 1
         V = Int64(ceil(2m/s))
         T = Int64(b * m / s)
-        M = vectorize(unionF(f(L, b, 2), f(L, b, 3)))
+        M = vectorize(f(L, b, 2))
         S = vectorize(unionF(f(L, T, V), f(L, T, V-1)))
 
         # Initialize model
@@ -85,10 +85,10 @@ function findproc(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=1)
     # Exit if no solutions
     if length(solutions) == 0
         if output > 0
-            printf("No solutions for muffins($m, $s, $alpha)", line=true)
+            printf("No solutions for muffins($m, $s, $alpha", line=true)
             printEnd()
         end
-        return [b, B, M, S, Nothing]
+        return Nothing
     end
 
     # Output each solution
@@ -107,7 +107,7 @@ function findproc(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=1)
         printEnd()
     end
 
-    #return [b, B, M, S, solutions] -- this can be used to implement solutions in other programs
+    #return [b, B, M, S, solutions]
 end
 
 # Helper function for findproc -- "vectorizes" arrays in set S based on B
