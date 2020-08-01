@@ -120,7 +120,7 @@ if Wshares > Vshares #according to VV conjecture the gap will exist in the Wshar
 #defining the new gap
 printfT("New gap", "The new gap will exist within the $W-shares. Because $Vshares $V-shares exist within [$aS, $xS], there must be $Vshares $W-shares within their buddies.")
 
-##interval graph with gaps
+#interval graph with gaps
 printHeader("INTERVAL DIAGRAM: ")
 printf("The following diagram depicts the interval diagram with the new gap: ")
 println("\n",

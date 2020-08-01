@@ -1,6 +1,6 @@
 # FC bound, Antara Hebbar
-include("text.jl")
-export fracstring
+include("format.jl")
+export formatFrac
 
 #taking m,s, program will use floor-ceiling method to output alpha, -1 signifies no value
 function fc(m, s)
@@ -12,7 +12,7 @@ minfloor=1-(m//(Int64(s * floor(V))))
 lowerbound=min(minceil, minfloor)
 ans=max(1//3,lowerbound)
 den = lcm(s, denominator(ans))
-ansS = fracstring(ans, den)
+ansS = formatFrac(ans, den)
 
 #output
 if m%s==0 #if shares divide into muffin
