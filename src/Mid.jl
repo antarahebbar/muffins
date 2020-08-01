@@ -1,11 +1,24 @@
+include("tools.jl")
+export sv, findend
+
+include("format.jl")
+export formatFrac
+
 function mid(muffins, students)
-V = Int64(ceil((2 * muffins)/students))
-W = V-1
-answer=1
-q = Int64(2*muffins - W*students)
-r = Int64(V*students - 2*muffins)
-Wshares=W*r
-Vshares=V*q
+V, W, Vnum, Wnum = sv(m,s)
+
+total = m//s
+Wshares= W*Wnum
+Vshares= V*Vnum
+
+if m<=0||s<=0
+    return "inputs must be >0"
+elseif m%s==0
+    return "s divides into m, so a=1"
+elseif m<s
+    return "input m>s"
+else
+
 
     if Wshares>Vshares
         alphalist=[]
