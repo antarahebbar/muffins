@@ -14,21 +14,15 @@ if proof
 #defining variables
     total=m//s
     abuddy=1-a
-    lowerproof= 1-(total*(1//(V-2))) #verifying v-conjecture
-    lpbuddy = 1-lowerproof
-    upperproof=(total)*(1//(V+1)) #verigying v-conjecture
-    Wshares=W*Wnum
-    Vshares=V*Vnum
+    (lowerproof, upperproof)= (1-(total*(1//(V-2))),total*(1//(V+1))) #verifying v-conjecture
+    lpbuddy = 1-lowerproof #verigying v-conjecture
+    (Wshares, Vshares)=(W*Wnum, V*Vnum)
     den=lcm(s, denominator(a))
 
 #formatting into fractions
-    lpS=formatFrac(lowerproof, denominator(lowerproof))
-    upS=formatFrac(upperproof, denominator(upperproof))
-    aS=formatFrac(a, den)
-    alpha = formatFrac(a, denominator(a))
+    (lpS, upS, lpbuddyS)=(formatFrac(lowerproof), formatFrac(upperproof), formatFrac(lpbuddy))
+    (alpha, aS, aB) = (formatFrac(a), formatFrac(a, den), formatFrac(abuddy, den))
     totalS=formatFrac(total, den)
-    aB=formatFrac(abuddy, den)
-    lpbuddyS = formatFrac(lpbuddy, denominator(lpbuddy))
 
 if lowerproof>a ||upperproof >a
     printf("Alpha does not comply with v-conjecture, V-Int failed")
@@ -59,12 +53,10 @@ else
 ((_, x), (y,_)) = findend(m,s,a,V)
 xbuddy = 1-x
 ybuddy = 1-y
+mid = formatFrac(1//2, den)
 
 #formatting
-xS = formatFrac(x, den)
-yS=formatFrac(y, den)
-xB = formatFrac(xbuddy, den)
-yB= formatFrac(ybuddy, den)
+xS, yS, xB, yB = (formatFrac(x, den), formatFrac(y, den), formatFrac(xbuddy, den), formatFrac(ybuddy, den))
 
 #solving for shares
 printHeader("SOLVING FOR # OF SHARES:")
@@ -85,10 +77,26 @@ println("\n",
                 [")", aB],
                 labels=["$Vshares $V-shs", "0", "$Wshares $W-shs"]))
 
+newgapshr = Wshares-Vshares
+
+
+elseif Vshares>Wshares
+    newgapshr = Vshares-Wshares
+    halfshr = Int64(newgapshr/2)
+    (ubmin, lbmin) = (Int64(floor(newgapshr/Vnum)), Int64(floor(Wshares/Vnum)))
+
+    (ubcheck1, ubcheck2) = ((V-ubmin)*ybuddy + ubmin*x, (V-ubmin)*a + ubmin*xbuddy)
+    (lbcheck1, lbcheck2) = ((V-lbmin)*ybuddy + lbmin*x, (V-lbmin)*a + lbmin*xbuddy)
+
+    (ubcheck1S, ubcheck2S, lbcheck1S, lbcheck2S) = (formatFrac(ubcheck1, den), formatFrac(ubcheck2, den), formatFrac(lbcheck1, den), formatFrac(lbcheck2, den))
+end
+
+printfT("Buddying", "Since [$xS, $yS] is empty, by buddying we know that [$yB, $xB] is also empty.")
+printfT("Defining terms", "We call the first interval of $W-shares smallshares and the second largeshares.")
+printf("Our new diagram will look like this:")
+
+
 if Wshares>Vshares
-    newgapshr = Wshares-Vshares
-    printfT("Buddying", "Since [$xS, $yS] is empty, by buddying we know that [$yB, $xB] is also empty.")
-    printf("Our new diagram will look like this:")
     println("\n",
             interval(["(", aS],
                     [")[", xS],
@@ -97,11 +105,7 @@ if Wshares>Vshares
                     ["](", xB],
                     [")", aB],
                     labels=["$Vshares $V-shs", "0", "$newgapshr $W-shares", "0", "$Vshares $W-shs"]))
-    printfT("Defining terms", "We call the first interval of $W-shares smallshares and the second largeshares.", "", "Let Alice be a $W student.")
 elseif Vshares>Wshares
-    newgapshr = Vshares-Wshares
-    printfT("Buddying", "Since [$xS, $yS] is empty, by buddying we know that [$yB, $xB] is also empty.")
-    printf("Our new diagram will look like this:")
     println("\n",
             interval(["(", aS],
                     [")[", yB],
@@ -110,20 +114,7 @@ elseif Vshares>Wshares
                     ["](", yS],
                     [")", aB],
                     labels=["$Wshares $V-shs", "0", "$newgapshr $V-shares", "0", "$Wshares $W-shs"]))
-    printfT("Defining terms", "We call the first interval of $W-shares smallshares and the second largeshares.")
 
-    ubmin = Int64(floor(newgapshr/Vnum))
-    lbmin = Int64(floor(Wshares/Vnum))
-
-    ubcheck1 = (V-ubmin)*ybuddy + ubmin*x
-    ubcheck2 = (V-ubmin)*a + ubmin*xbuddy
-    lbcheck1 = (V-lbmin)*ybuddy + lbmin*x
-    lbcheck2 = (V-lbmin)*a + lbmin*xbuddy
-
-    ubcheck1S = formatFrac(ubcheck1, den)
-    ubcheck2S=formatFrac(ubcheck2, den)
-    lbcheck1S = formatFrac(lbcheck1, den)
-    lbcheck2S=formatFrac(lbcheck2, den)
 
 #determining how many shares a V-student can have
 printHeader("DETERMINING TYPES OF $V-STUDENTS:")
@@ -132,8 +123,27 @@ printfT("Determining type of $V-student", "If Alice gets $ubmin largeshares and 
 printfT("Determining type of $V-student", "If Alice gets $lbmin smallshares and $(V-lbmin) largeshares, she has < $(V-lbmin)*$yB + $lbmin*$xS = $lbcheck1S. She gets enough.", "", "Alice also gets ≥ $(V-lbmin)*$aS + $lbmin*$xB = $lbcheck2S. She doesn't get too much.", "", "This kind of student is possible.")
 printf("Therefore, all $V-students must have at least $ubmin largeshares and $lbmin smallshares.")
 
+#interval with mid gap
+printHeader("INTERVAL DIAGRAM WITH MIDGAP: ")
+printfT("Buddying", "$mid is in the middle of the interval [$xB, $xS]. The number of shares in [$xB, $mid] and [$mid, $xS] is the same.")
+println("\n",
+        interval(["(", aS],
+                [")[", yB],
+                ["](", xB],
+                ["|", mid],
+                [")", xS],
+                labels=["$Wshares $V-shs", "0", "$halfshr $V-shares", "$halfshr $V-shs"]))
+
+#defining interval gaps
+printLine()
+printfT("Defining interval gaps", "We define the following intervals: ", "", "I1 = ($aS, $yB) = $Wshares", "", "I2 = ($xB, $mid)", "", "I3 = ($mid, $xS)", "", "I2 = I3 = $(halfshr)")
+
+
+#common terms used for proof
+printfT("Terms", "")
+
 else
-    printf("midproof failed, both intervals have equal shares")
+    printf("midproof failed, both intervals have equal number of shares")
 end
 
     #=if Wshares > Vshares

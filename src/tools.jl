@@ -1,3 +1,5 @@
+using Combinatorics
+
 import Base.match
 match(m,s,frac1::Rational{Int64}, frac2::Rational{Int64}) = match(m.x,s.x,frac1.x,frac2.x)
 
@@ -59,4 +61,37 @@ frac1<frac2 ? m2=frac1 : m2=frac2
 
 return 1-m1, 1-m2
 
+end
+
+#function that returns all permutations from 0 to targ that sum to targ of size n
+function combs(targ::Any,n::Any)
+
+openvec = Vector{Int64}(undef, 0)
+if n==0 #if length is 0, return empty vector
+    return openvec
+else
+
+sol = Vector{Int64}(undef, 0)
+fullsol = Vector{Vector{Int64}}(undef, 0)
+
+
+for i = 0:targ
+    push!(sol, i)
+end
+
+fullsol = reverse.(digits.(0:n^n-1,base=n,pad=n))
+len=length(fullsol)
+
+finalsol = Array{Array{Int64,1}}(undef, 0)
+
+for i = 1:len
+    element = fullsol[i]
+    if sum(element)==targ
+        push!(finalsol, element)
+    end
+end
+
+return finalsol #returns an array with solutions of length n
+
+end
 end
