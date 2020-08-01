@@ -1,10 +1,11 @@
-
+module Format
 
 Base.findlast(char::Char, str::String) = findlast(char.x, str.x)
 
 using TextWrap
 
 export findlast, printf, printfT, printHeader, printEnd, printLine, formatFrac, interval, toFrac, center
+
 LEFT_WIDTH = 45
 RIGHT_WIDTH = 25
 LINE_WIDTH = LEFT_WIDTH + RIGHT_WIDTH
@@ -111,4 +112,5 @@ function findlast(char::Char, str::String)
         i += 1
     end
     o
+end
 end
