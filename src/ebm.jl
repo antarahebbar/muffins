@@ -37,21 +37,20 @@ j = s-(3*d*k) #Note: s=3dk+a and m=3dk+a+d.
 if j>=(2*d+1)&&j<=(3*d)
         X=j//3
         a = (d*k+X)//(3*d*k+j)
-        return a
 elseif j==2*d
         a = fc(m,s)
-        return a
 elseif j>=1&&j<=d
         X=min(j//2)
         a = (d*k+X)//(3*d*k+j)
-        return a
 elseif j>=d&&j<=(2*d-1)
         X=min((j+d)//4)
         a = (d*k+X)//(3*d*k+j)
-        return a
 else
         return -1
 end
+
+aS = formatFrac(a, denominator(a))
+return aS
 end
 
 else

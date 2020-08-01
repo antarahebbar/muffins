@@ -88,7 +88,7 @@ function findproc(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=1)
             printf("No solutions for muffins($m, $s, $alpha)", line=true)
             printEnd()
         end
-        return [b, B, M, S, Nothing]
+        #return [b, B, M, S, Nothing]
     end
 
     # Output each solution
