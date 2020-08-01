@@ -1,4 +1,4 @@
-module Format
+
 
 Base.findlast(char::Char, str::String) = findlast(char.x, str.x)
 
@@ -111,5 +111,4 @@ function findlast(char::Char, str::String)
         i += 1
     end
     o
-end
 end
