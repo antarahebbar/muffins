@@ -1,12 +1,15 @@
+module EBM
 
 include("tools.jl")
-export sv, findend, match, buddy
+using .Tools
 
 include("format.jl")
-export printf, printfT, printHeader, findlast, formatFrac
+using .Format
 
 include("FCBound.jl")
-export fc
+using .FC
+
+export ebm, ebmproof
 
 #given (m,s), program outputs alpha using easy-buddy match method, returns either alpha or -1 if no answer
 function ebm(m::Int64, s::Int64, proof::Bool=false)
@@ -61,7 +64,7 @@ end
 
 
 
-
+#unfinished
 #Helper function for emb, optionally outputs a proof using easy-buddy match method
 function embproof(m, s, a, proof::Bool=true)
 
@@ -137,3 +140,6 @@ println("\n",
 end #if v==3 or 2
 end #if proof end
 end #function end
+
+
+end

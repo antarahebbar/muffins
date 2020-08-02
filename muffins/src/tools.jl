@@ -1,9 +1,11 @@
+module Tools
+
 using Combinatorics
 
 import Base.match
 match(m,s,frac1::Rational{Int64}, frac2::Rational{Int64}) = match(m.x,s.x,frac1.x,frac2.x)
 
-
+export sv, findend, buddy, match, combs
 #uses v conejcture to solve for V&W shares
 function sv(m::Int64,s::Int64)
 
@@ -93,5 +95,6 @@ end
 
 return finalsol #returns an array with solutions of length n
 
+end
 end
 end

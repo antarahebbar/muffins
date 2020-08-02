@@ -1,10 +1,13 @@
-#program is from https://github.com/GeneralPoxter/Muffins.jl
+#program is from repo Mufins.jl, https://github.com/GeneralPoxter/Muffins.jl
+module FindProc
 
 using JuMP
 using Cbc
 
 include("format.jl")
-export printf, printfT, printHeader, findlast, center
+using .Format
+
+export findproc, vectorize, unpack, unionF, mapCat, f
 
 B = []
 memo = Dict()
@@ -165,4 +168,5 @@ end
 # Helper function for f -- concatenate e with each element in set S
 function mapCat(S, e)
     S == Nothing ? Nothing : Set([vcat(s, e) for s in S])
+end
 end

@@ -1,10 +1,12 @@
+module HBM
+
 include("tools.jl")
-export sv, findend
+using .Tools
 
 include("format.jl")
-export printf, printfT, printHeader, findlast, formatFrac
+using .Format
 
-
+#unfinished code
 #Helper function for HBM, verifies whether (m,s) is a candidate for hbm method
 
 function vhbm(j, k, d, X)
@@ -22,4 +24,6 @@ elseif X>=(j//2)
     pre=true
 elseif X>=(j+d)//4
     pre=true
+end
+end
 end
