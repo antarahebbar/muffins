@@ -1,6 +1,6 @@
 # FC bound, Antara Hebbar
 include("format.jl")
-export formatFrac
+using .Format
 
 #taking m,s, program will use floor-ceiling method to output alpha, -1 signifies no value
 function fc(m, s)
