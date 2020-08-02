@@ -1,8 +1,9 @@
 include("tools.jl")
-export sv, findend
+export sv, findend, combs
 
 include("format.jl")
 export formatFrac
+
 
 function mid(m, s)
 V, W, Vnum, Wnum = sv(m,s)
@@ -187,6 +188,7 @@ lowerproof, upperproof= 1-(total*(1//(V-2))), (total)*(1//(V+1))
 ((_, x), (y,_)) = findend(m,s,a,V)
 xbuddy = 1-x
 ybuddy = 1-y
+abuddy = 1-a
 
 if m<s||m<=0||s<=0||m%s==0
     return -1
@@ -203,6 +205,9 @@ newgapshr = Wshares-Vshares
 halfshr = Int64(Vshares/2) #check this
 (ubmin, lbmin) =(Int64(floor(Vshares/Wnum)), #upper bound for # of W largeshares
 Int64(floor((newgapshr)/Wnum))) #lower bound for # of W smallshares
+VV = W
+endpoints = (y, 1//2, ybuddy, xbuddy, abuddy)
+splitshares = (y, 1//2, ybuddy)
  #check these
 
 elseif Vshares>Wshares
@@ -210,18 +215,32 @@ newgapshr =Vshares-Wshares
 halfshr = Int64(newgapshr/2)
 (ubmin, lbmin) = (Int64(floor(newgapshr/Vnum)), #bound for number of largeshares a V-student can have
 Int64(floor(Wshares/Vnum))) #bound for number of smallshares a V-student can have
-
-
-if x-1//2 != 1//2-xbuddy #error if 1/2 is not in the middle of an interval
-    return -1
-else
-
-#find combinations of V-students- implementation of combs function
-
-
+VV = V
+endpoints = (a, ybuddy, xbuddy, 1//2, x)
+splitshares = (xbuddy, 1//2, x)
 
 else #if number of Vshares = number of Wshares
     return -1
+end
+
+if splitshares[3]-splitshares[2] != splitshares[2]-splitshares[1] #error if 1/2 is not in the middle of an interval
+    return -1
+else
+
+#find combinations of V/W-students- implementation of combs function
+studcombs = combs(VV, 3)
+workingcomb = Array{Array{{Int64}}}(undef, 0)
+print(studcombs)
+
+sum = 0
+#=for i= 1:length(studcombs)
+    elem = studcomb[i]
+    for k = 1:length(elem)
+        sum = elem[k]*endpoints[]=#
+
+
+
+
 end
 end
 end
