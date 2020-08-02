@@ -1,27 +1,24 @@
+module Muffins
 
 include("FCBound.jl")
-export fc
+using .FC
 
 include("Half.jl")
-export half, vhalf1
-
-include("halfproof.jl")
-export halfproof
+using .Half
 
 include("ebm.jl")
-export emb
+using .EBM
 
 include("tools.jl")
-export sv, findend
+using .Tools
 
 include("Int.jl")
-export vint1, int
-
-include("intproof.jl")
-export intproof
+using .IntMethod
 
 include("format.jl")
-export toFrac, formatFrac
+using .Format
+
+export muffins
 
 
 #given m,s, program will output min of half, int, and fc
@@ -112,4 +109,5 @@ end #error 2
 
 
 end #input problems
+end
 end
