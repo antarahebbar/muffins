@@ -17,29 +17,32 @@ Run `julia` in the terminal to open the Julia REPL and load the package by enter
 ```julia
 using Pkg
 Pkg.add("https://github.com/antarahebbar/muffins")
-using Muffins
+using .Main
 ```
 
 ## Usage
 Let `m` and `s` be predefined positive `Int64`-type variables. Let `α` be a predefined positive `Rational{Int64}`-type variable.
 
 ### General Solution
-Run `Minipackage.muffins(m,s)`* to solve the Muffin Problem for `m` muffins and `s` students.  The package will find the minimum of alphas outputted by floor-ceiling, int, and half methods.
+Run `Main.muffins(m,s)`* to solve the Muffin Problem for `m` muffins and `s` students.  The package will find the minimum of alphas outputted by floor-ceiling, int, and half methods.
 An upper bound `α` for `muffins(m, s)` is determined by testing (`m`, `s`) on all of the bounding methods in the package (see **Bounding methods**). The upper bound `α` is then verified to be a lower bound for `muffins(m, s)` by finding a procedure where `α` is the smallest muffin piece cut (see **FindProc**). If all tests are conclusive, `α`, a proof, and solutions are returned to`muffins(m, s)`.
 
 ### Bounding methods
 #### Floor-Ceiling Theorem
-Run `muffins.fc(m, s)`^ to apply the Floor-Ceiling Theorem on (`m`, `s`) to find an upper bound `α` for `muffins(m, s)`. `α` is returned.
+Run `Main.fc(m, s)`^ to apply the Floor-Ceiling Theorem on (`m`, `s`) to find an upper bound `α` for `muffins(m, s)`. `α` is returned.
 
 #### Half Method
-Run `muffins.half(m, s)`* to apply the Half Method on (`m`, `s`) to find an upper bound `α` for `muffins(m, s)`. `α` is returned.
-Program automatically runs `muffins.vhalf1(m, s, α)`* to verify whether the Half Method can prove that the given `α` is an upper bound for `muffins(m, s)`. 0 is returned if vhalf verifies alpha, -1 is returned if it does not. 
-Optionally run `muffins.halfproof(m,s,a)` or `muffins.half(m,s,true)` to output a proof of the half method with interval diagrams.  
+Run `Main.half(m, s)`* to apply the Half Method on (`m`, `s`) to find an upper bound `α` for `muffins(m, s)`. `α` is returned.
+Program automatically runs `Main.vhalf1(m, s, α)`* to verify whether the Half Method can prove that the given `α` is an upper bound for `muffins(m, s)`. 0 is returned if vhalf verifies alpha, -1 is returned if it does not.
+Optionally run `Main.half(m,s,true)` to output a proof of the half method with interval diagrams.  
 
 #### Interval Method
-Run `muffins.int(m, s)`* to apply the Interval Method on (`m`, `s`) to find an upper bound `α` for `muffins(m, s)`. `α` is returned.  
-Program automatically runs `muffins.vint1(m, s, α)`* to verify whether the Int Method can prove that the given `α` is an upper bound for `muffins(m, s)`. 0 is returned if vint1 verifies alpha, -1 is returned if it does not.
-Optionally run `muffins.intproof(m,s,a)` or `muffins.int(m,s,true)` to output a proof of the int method with interval diagrams.  
+Run `Main.int(m, s)`* to apply the Interval Method on (`m`, `s`) to find an upper bound `α` for`muffins(m, s)`. `α` is returned.  
+Program automatically runs `Main.vint1(m, s, α)`* to verify whether the Int Method can prove that the given `α` is an upper bound for `muffins(m, s)`. 0 is returned if vint1 verifies alpha, -1 is returned if it does not.
+Optionally run `Main.int(m,s,true)` to output a proof of the int method with interval diagrams.  
+
+### Easy-Buddy Match Method
+Run `Main.ebm(m, s)` to apply the Easy-Buddy Match method (EBM) on (`m`, `s`) to find an upper bound `α` for `muffins(m, s)`. `α` is returned.  Program will return -1 if no verifiable solution is found.
 
 ### Midpoint Method
 More to come on midpoint method, vmid, and midproof. This method is not included in the minipackage.
