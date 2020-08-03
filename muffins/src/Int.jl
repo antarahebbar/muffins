@@ -4,7 +4,7 @@ include("tools.jl")
 using .Tools
 
 include("format.jl")
-using .Format
+using .Formatting
 
 export int, vint1, intproof
 

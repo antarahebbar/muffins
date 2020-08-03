@@ -1,6 +1,10 @@
 # FC bound, Antara Hebbar
+module FloorCeiling
+
 include("format.jl")
-import Format
+using .Formatting
+
+export fc
 
 #taking m,s, program will use floor-ceiling method to output alpha, -1 signifies no value
 function fc(m, s)
@@ -24,5 +28,6 @@ elseif m>s #answer as a string
 else # -1 is indicator for no answer
     return -1
 
+end
 end
 end

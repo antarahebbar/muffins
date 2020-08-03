@@ -1,7 +1,7 @@
 module Half
 
 include("format.jl")
-using .Format
+using .Formatting
 
 include("tools.jl")
 using .Tools

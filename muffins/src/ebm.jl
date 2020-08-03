@@ -4,10 +4,10 @@ include("tools.jl")
 using .Tools
 
 include("format.jl")
-using .Format
+using .Formatting
 
 include("FCBound.jl")
-using .FC
+using .FloorCeiling
 
 export ebm, ebmproof
 

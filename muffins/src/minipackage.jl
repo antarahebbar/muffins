@@ -1,7 +1,7 @@
-module Muffins
+module Main
 
 include("FCBound.jl")
-using .FC
+using .FloorCeiling
 
 include("Half.jl")
 using .Half
@@ -15,14 +15,17 @@ using .Tools
 include("Int.jl")
 using .IntMethod
 
-include("format.jl")
-using .Format
+include("findproc.jl")
+using .FindProc
 
-export muffins
+include("format.jl")
+using .Formatting
+
+export mini
 
 
 #given m,s, program will output min of half, int, and fc
-function muffins(m::Int64, s::Int64)
+function mini(m::Int64, s::Int64)
 
 alpha_fc = fc(m,s)
 

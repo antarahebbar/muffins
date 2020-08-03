@@ -5,7 +5,7 @@ using JuMP
 using Cbc
 
 include("format.jl")
-using .Format
+using .Formatting
 
 export findproc, vectorize, unpack, unionF, mapCat, f
 
