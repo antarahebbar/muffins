@@ -1,4 +1,4 @@
-module Main
+module Muffins
 
 
 include("FCBound.jl")
