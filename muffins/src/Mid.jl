@@ -2,16 +2,34 @@ module MidMethod
 
 
 #MidMethod for joint Muffin Package, https://github.com/GeneralPoxter/Muffins.jl
-include("format.jl")
+
+include("Format.jl")
 using .Formatting
 
-include("tools.jl")
-using .Tools
+export mid, vmid, SVJ, findendJ
 
-export mid, vmid
+#jasons version of sv
+function SVJ(m, s)
+    V = Int64(ceil(2m/s))
+    W = V-1
+    sV = (-W)s + 2m
+    sW = (V)s - 2m
+    (V, W, sV, sW)
+end
+
+#jasons version of findend
+function findendJ(m, s, alpha, V)
+    x = m//s - alpha*(V-1)
+    x = x <= alpha ? alpha : (x >= 1-alpha ? 1-alpha : x)
+
+    y = m//s - (1-alpha)*(V-2)
+    y = y >= 1-alpha ? 1-alpha : (y <= alpha ? alpha : y)
+
+    ((alpha, x), (y, 1-alpha))
+end
 
 # Determines upper bound alpha with Midpoint Method, optionally outputs proof
-function mid(m::Int64, s::Int64; output::Int64=0)
+function mid(m::Int64, s::Int64; output::Int64=2)
     output > 0 && printHeader(center("MIDPOINT METHOD"))
 
     if m < s
@@ -29,7 +47,7 @@ function mid(m::Int64, s::Int64; output::Int64=0)
         return 1
     end
 
-    (V, W, sV, sW) = sv(m, s)
+    (V, W, sV, sW) = SVJ(m, s)
     numV = (V)sV
     numW = (W)sW
 
@@ -53,7 +71,7 @@ function mid(m::Int64, s::Int64; output::Int64=0)
     for alpha in sort(unique(alphas))
         if denominator(alpha) != 0 && vmid(m, s, alpha, output=0)
             vmid(m, s, alpha, output=output)
-            alphastring = formatFrac(alpha)
+            alphastring=formatFrac(alpha)
             return alphastring
         end
     end
@@ -77,7 +95,7 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
         output > 0 && printfT("No piece size > 1", "α must be ≤ 1")
         false
     else
-        (V, W, sV, sW) = sv(m, s)
+        (V, W, sV, sW) = SVJ(m, s)
         numV = (V)sV
         numW = (W)sW
 
@@ -109,10 +127,12 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
             return false
         end
 
-        ((_, x), (y, _)) = findend(m, s, alpha, V)
+        ((_, x), (y, _)) = findendJ(m, s, alpha, V)
+        xOriginal = m//s - alpha*(V-1)
+        yOriginal = m//s - (1-alpha)*(V-2)
 
         # Check if FindEnd works
-        if x == alpha && y == 1-alpha
+        if x != xOriginal && y != yOriginal
             output > 0 && printf("FindEnd inconclusive, VMid failed", line=true)
             return false
         end
@@ -146,7 +166,7 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
                     "s_$W = $sW, s_$V = $sV",
                     "So there are $numW $W-shs and $numV $V-shs")
 
-            if x != alpha
+            if x == xOriginal
                 printfT("Case 1",
                         "Alice has a $V-sh ≥ $xF",
                         "Her other $(V-1) $V-shs sum to ≤ ($size - $xF) = $a",
@@ -158,7 +178,7 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
                         "FindEnd did not produce a conclusive bound for $V-shs")
             end
 
-            if y != 1-alpha
+            if y == yOriginal
                 printfT("Case 2",
                         "Bob has a $W-sh ≤ $yF",
                         "His other $(W-1) $W-shs sum to ≥ ($size - $yF) = $b",
