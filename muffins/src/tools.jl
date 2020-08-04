@@ -5,7 +5,7 @@ using Combinatorics
 import Base.match
 match(m,s,frac1::Rational{Int64}, frac2::Rational{Int64}) = match(m.x,s.x,frac1.x,frac2.x)
 
-export sv, findend, buddy, match, combs
+export sv, findend, buddy, match, combs, perm, targperm
 #uses v conejcture to solve for V&W shares
 function sv(m::Int64,s::Int64)
 
@@ -81,7 +81,7 @@ for i = 0:targ
     push!(sol, i)
 end
 
-fullsol = reverse.(digits.(0:n^n-1,base=n,pad=n))
+fullsol = reverse.(digits.(0:targ^n-1,base=targ,pad=n))
 len=length(fullsol)
 
 finalsol = Array{Array{Int64,1}}(undef, 0)
@@ -92,9 +92,54 @@ for i = 1:len
         push!(finalsol, element)
     end
 end
+othersolutions = Array{Array{Int64}}(undef, 0)
 
-return finalsol #returns an array with solutions of length n
+othersolutions = targperm(targ, n)
+
+splitting(x, n) = [x[i:min(i+n-1,length(x))] for i in 1:n:length(x)] #function will split targperm output into increments of length n
+
+append!(finalsol, splitting(othersolutions, n))
+
+
 
 end
+end
+
+
+#helper function for combs, retuns permuations of target number and 0
+
+function targperm(targ, n)
+
+littlesol = Array{Int64, 1}(undef, 0)
+zero = Array{Int64, 1}(undef, 0)
+bigsol = Array{Array{Int64, 1}}(undef, 0)
+answer = Array{Int64, 1}(undef, 0)
+
+for i = 1:n
+    push!(zero, 0)
+    push!(bigsol, zero) #generates n arrays consisting of zeros
+end
+
+
+#combinations of 0 and target number
+index = 1
+for i = 1:n
+    littlesol = bigsol[i];
+    for j = 1:n
+        if index == j
+            littlesol[j] =targ
+            append!(answer, littlesol[j])
+        else
+            littlesol[j]=0
+            append!(answer, littlesol[j])
+        end
+    end
+    index+=1
+
+end
+
+return answer
+
+
 end
 end
