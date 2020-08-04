@@ -1,4 +1,4 @@
-module HALF
+module HALFMETHOD
 
 include("format.jl")
 using .FORMAT
@@ -71,7 +71,7 @@ if W*Wshr>V*Vshr
         if proof
             return halfproof(m,s,alpha1, true)
         end
-        a = formatFrac(1//3, 3)
+        a = 1//3
         return a
     else
         a=alpha1
@@ -79,7 +79,6 @@ if W*Wshr>V*Vshr
             if proof
                 return halfproof(m,s,a,true)
             end
-            a = formatFrac(a, lcm(s, denominator(a)))
             return a
         else
             return 1 #vhalf failed, upperbound of alpha is 1
@@ -91,7 +90,7 @@ elseif W*Wshr<V*Vshr
         if proof
             return halfproof(m,s,alpha2,true)
         end
-        a = formatFrac(1//3, 3)
+        a = 1//3
         return a
     else
         a=alpha2
@@ -99,7 +98,6 @@ elseif W*Wshr<V*Vshr
             if proof
                 return halfproof(m,s,a,true)
             end
-            a = formatFrac(a, lcm(s, denominator(a)))
             return a
         else
             return 1 #vhalf failed, upperbound of alpha is 1

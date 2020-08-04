@@ -1,4 +1,4 @@
-module MID
+module MIDMETHOD
 
 
 #MidMethod for joint Muffin Package, https://github.com/GeneralPoxter/Muffins.jl
@@ -6,27 +6,10 @@ module MID
 include("Format.jl")
 using .FORMAT
 
-export mid, vmid, SVJ, findendJ, FracFormat, FracConvert
+include("tools.jl")
+using .TOOLS
 
-#jasons version of sv
-function SVJ(m, s)
-    V = Int64(ceil(2m/s))
-    W = V-1
-    sV = (-W)s + 2m
-    sW = (V)s - 2m
-    (V, W, sV, sW)
-end
-
-#jasons version of findend
-function findendJ(m, s, alpha, V)
-    x = m//s - alpha*(V-1)
-    x = x <= alpha ? alpha : (x >= 1-alpha ? 1-alpha : x)
-
-    y = m//s - (1-alpha)*(V-2)
-    y = y >= 1-alpha ? 1-alpha : (y <= alpha ? alpha : y)
-
-    ((alpha, x), (y, 1-alpha))
-end
+export mid, vmid, FracFormat, FracConvert
 
 function FracFormat(frac::Rational{Int64}, den=denominator(frac))
     (n, d) = (numerator(frac), denominator(frac))
@@ -48,8 +31,7 @@ function FracConvert(frac::String)
     end
 end
 
-# Determines upper bound alpha with Midpoint Method, optionally outputs proof
-function mid(m::Int64, s::Int64; output::Int64=2)
+function mid(m::Int64, s::Int64; output::Int64=0)
     output > 0 && printHeader(center("MIDPOINT METHOD"))
 
     if m < s
@@ -67,7 +49,7 @@ function mid(m::Int64, s::Int64; output::Int64=2)
         return 1
     end
 
-    (V, W, sV, sW) = SVJ(m, s)
+    (V, W, sV, sW) = sv(m, s)
     numV = (V)sV
     numW = (W)sW
 
@@ -91,8 +73,7 @@ function mid(m::Int64, s::Int64; output::Int64=2)
     for alpha in sort(unique(alphas))
         if denominator(alpha) != 0 && vmid(m, s, alpha, output=0)
             vmid(m, s, alpha, output=output)
-            alphastring=FracFormat(alpha)
-            return alphastring
+            return alpha
         end
     end
 
@@ -115,7 +96,7 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
         output > 0 && printfT("No piece size > 1", "α must be ≤ 1")
         false
     else
-        (V, W, sV, sW) = SVJ(m, s)
+        (V, W, sV, sW) = sv(m, s)
         numV = (V)sV
         numW = (W)sW
 
@@ -147,7 +128,7 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
             return false
         end
 
-        ((_, x), (y, _)) = findendJ(m, s, alpha, V)
+        ((_, x), (y, _)) = findend(m, s, alpha, V)
         xOriginal = m//s - alpha*(V-1)
         yOriginal = m//s - (1-alpha)*(V-2)
 
@@ -386,8 +367,7 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
                 if length(posInt) > 3
                     if output > 1
                         printfT("System of equations",
-                                "A solvable system of equations could not be set up to see if the above combinations will result in a contradictory non-integer solution,",
-                                "VMid failed")
+                                "A solvable system of equations could not be set up to see if the above combinations will result in a contradictory non-integer solution, VMid failed")
                     elseif output > 0
                         printf("Could not generate conclusive system of equations, VMid failed", line=true)
                     end
@@ -405,9 +385,10 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
                 end
 
                 if length(posInt) == 3
-                    x1 = FracFormat(((z1[3]-z1[2]+z2[2]-z2[3])numMin + ((z2[3]-z1[3])z3[2]+(z1[2]-z2[2])z3[3])sMax)//((z1[3]-z1[2]+z2[2]-z2[3])z3[1] + (z1[1]-z1[3]+z2[3]-z2[1])z3[2] + (z1[2]-z1[1]+z2[1]-z2[2])z3[3]))
-                    x2 = FracFormat(((z1[3]-z2[3])numMin - ((z1[3]-z2[3])z3[1] + (z2[1]-z1[1])z3[3])*FracConvert(x1))//((z1[3]-z2[3])z3[2] + (z2[2]-z1[2])z3[3]))
-                    x3 = FracFormat(sMax-FracConvert(x1)-FracConvert(x2))
+                    x1 = ((z1[3]-z1[2]+z2[2]-z2[3])numMin + ((z2[3]-z1[3])z3[2]+(z1[2]-z2[2])z3[3])sMax)//((z1[3]-z1[2]+z2[2]-z2[3])z3[1] + (z1[1]-z1[3]+z2[3]-z2[1])z3[2] + (z1[2]-z1[1]+z2[1]-z2[2])z3[3])
+                    x2 = ((z1[3]-z2[3])numMin - ((z1[3]-z2[3])z3[1] + (z2[1]-z1[1])z3[3])*x1)//((z1[3]-z2[3])z3[2] + (z2[2]-z1[2])z3[3])
+                    x3 = sMax-x1-x2
+                    (x1F, x2F, x3F) = (FracFormat(x1), FracFormat(x2), FracFormat(x3))
 
                     equations = ["$(z1[1])·x + $(z1[2])·y + $(z1[3])·z = $(z2[1])·x + $(z2[2])·y + $(z2[3])·z",
                                 "$(z3[1])·x + $(z3[2])·y + $(z3[3])·z = |$Z3| = $numMin",
@@ -420,19 +401,20 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
                                 "and z the # of students with",
                                 "$(a[3]) A-shs, $(b[3]) B-shs, and $(c[3]) C-shs"]
 
-                    if occursin("/", x1) || occursin("/", x2) || FracConvert(x1) < 0 || FracConvert(x2) < 0 || FracConvert(x3) < 0
-                        solutions = ["The solutions are x = $x1, y = $x2, z = $x3",
-                                    "The solutions are not positive integers, so the entirety of Case 3 is impossible"]
+                    if occursin("/", x1F) || occursin("/", x2F) || x1 < 0 || x2 < 0 || x3 < 0
+                        solutions = ["The solutions are x = $x1F, y = $x2F, z = $x3F",
+                                    "The solutions are not positive integers, so Case 3 is impossible"]
                     else
-                        solutions = ["The solutions are x = $x1, y = $x2, z = $x3",
+                        solutions = ["The solutions are x = $x1F, y = $x2F, z = $x3F",
                                     "The solutions are positive integers, so Case 3 is still possible, VMid failed"]
                         fail = true
                     end
                 end
 
                 if length(posInt) == 2
-                    x1 = FracFormat(sMax//(1+(z1[1]-z2[1])//(z2[2]-z1[2])))
-                    x2 = FracFormat(sMax-FracConvert(x1))
+                    x1 = sMax//(1+(z1[1]-z2[1])//(z2[2]-z1[2]))
+                    x2 = sMax-x1
+                    (x1F, x2F) = (FracFormat(x1), FracFormat(x2))
 
                     equations = ["$(z1[1])·x + $(z1[2])·y = $(z2[1])·x + $(z2[2])·y",
                                 "x + y = s_$vMax = $sMax",
@@ -442,14 +424,14 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
                                 "and y the # of students with",
                                 "$(a[2]) A-shs, $(b[2]) B-shs, and $(c[2]) C-shs"]
 
-                    if occursin("/", x1) || FracConvert(x1) < 0 || FracConvert(x2) < 0
-                        solutions = ["The solutions are x = $x1, y = $x2",
-                                    "The solutions are not positive integers, so the entirety of Case 3 is impossible"]
-                    elseif z3[1]*FracConvert(x1) + z3[2]*FracConvert(x2) != numMin
+                    if occursin("/", x1F) || x1 < 0 || x2 < 0
+                        solutions = ["The solutions are x = $x1F, y = $x2F",
+                                    "The solutions are not positive integers, so Case 3 is impossible"]
+                    elseif z3[1]*x1 + z3[2]*x2 != numMin
                         insert!(equations, 3, "$(z3[1])·x + $(z3[2])·y = |$Z3| = $numMin")
-                        solutions = ["This system has no solutions, so the entirety of Case 3 is impossible"]
+                        solutions = ["This system has no solutions, so Case 3 is impossible"]
                     else
-                        solutions = ["The solutions are x = $x1, y = $x2",
+                        solutions = ["The solutions are x = $x1F, y = $x2F",
                                     "The solutions are positive integers, so Case 3 is still possible, VMid failed"]
                         fail = true
                     end
@@ -462,10 +444,23 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
                                 "where x is the # of students with $(a[1]) A-shs, $(b[1]) B-shs, and $(c[1]) C-shs"]
 
                     if z1[1] != z2[1]
-                        solutions = ["This system has no solution, so the entirety of Case 3 is impossible"]
+                        solutions = ["This system has no solution, so Case 3 is impossible"]
                     else
-                        solutions = ["This system has infinite solutions, VMid failed"]
-                        fail = true
+                        x1 = numMin//z3[1]
+                        x1F = FracFormat(x1)
+                        insert!(equations, 3, "$(z3[1])·x = |$Z3| = $numMin")
+                        if occursin("/", x1F)
+                            solutions = ["The solution is x = $x1F",
+                                        "The solution is not a positive integer, so Case 3 is impossible"]
+                        else
+                            if x1 != sMax
+                                solutions = ["This system has no solution, so Case 3 is impossible"]
+                            else
+                                solutions = ["The solution is x = $x1F",
+                                            "The solution is a positive integer, so Case 3 is still possible, VMid failed "]
+                                fail = true
+                            end
+                        end
                     end
                 end
 

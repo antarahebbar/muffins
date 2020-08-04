@@ -1,6 +1,21 @@
 # Import package and any files here ↴
-include("muffins.jl")
-using .Muffins
+include("FCBound.jl")
+using .FC
+
+include("Half.jl")
+using .HALFMETHOD
+
+include("Int.jl")
+using .INTMETHOD
+
+include("Mid.jl")
+using .MIDMETHOD
+
+include("ebm.jl")
+using .EBM
+
+include("format.jl")
+using .FORMAT
 
 # Make sure test.txt is in the same folder as test.jl
 lines = open("test.txt") do file
@@ -30,19 +45,19 @@ for case in lines
         res = 0
 
         if method == "FC"
-            res = fc(m, s)
+            res = fc(m,s)
         end
 
         if method == "HALF"
-            res = half(m, s)
+            res = half(m,s)
         end
 
         if method == "INT"
-            res = int(m, s)
+            #res = int(m, s)
         end
 
         if method == "MID"
-            res = mid(m, s)
+            #res = mid(m, s)
         end
 
         if startswith(method, "EBM")
@@ -65,5 +80,11 @@ for case in lines
             append!(skipped, [[(m, s), method]])
         end
     end
-return incorrect
+end
+
+# Filter inconclusive responses; remove if needed
+for i in incorrect
+    if i[3] != 1
+        println(i)
+    end
 end

@@ -16,7 +16,6 @@ minfloor=1-(m//(Int64(s * floor(V))))
 lowerbound=min(minceil, minfloor)
 ans=max(1//3,lowerbound)
 den = lcm(s, denominator(ans))
-ansS = formatFrac(ans, den)
 
 #output
 if m%s==0 #if shares divide into muffin
@@ -24,7 +23,7 @@ if m%s==0 #if shares divide into muffin
 elseif m<s #incorrect input
     return false #cannot m<s
 elseif m>s #answer as a string
-    return ansS
+    return ans
 else # -1 is indicator for no answer
     return -1
 

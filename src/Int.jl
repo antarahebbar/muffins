@@ -1,4 +1,4 @@
-module INT
+module INTMETHOD
 
 include("tools.jl")
 using .TOOLS
@@ -6,7 +6,7 @@ using .TOOLS
 include("format.jl")
 using .FORMAT
 
-export int, vint1, intproof
+export int, vint1, intproof, vint2
 
 #Function takes (m,s) and outputs alpha if vint verifies it, can also output optional proof
 #will output 1 if vint does not verify int, 1 is the largest upperbound for alpha
@@ -32,14 +32,12 @@ else
         ubmin=Int64(floor(Vshares/Wnum)) #upper bound for # of W largeshares
         lbmin = Int64(floor((newgap)/Wnum)) #lower bound for # of W smallshares
         f=W-ubmin
-        a1= (ubmin+f*newdown1-total)//(ubmin+f*(W-1))
-        a2=(total-(V-f)*(newdown2)-(f-1)*(1-newdown1))//((V-f)*(V-1)-(f-1)*(W-1))
-
-        a = min(a1, a2)
+        a = min(((f)W - (f+1)m//s + ubmin)//((f-1)W + 2ubmin),    # Value for alpha derived by solving f(1-α) + (W-f)(1-y) = m/s
+                            ((lbmin-1)W + (W -2lbmin+1)m//s)//(W^2 - lbmin))            # Value for alpha derived by solving gy + (W-g)(1-x) = m/s
 
         if a<=1//3
             if vint1(m,s,1//3)==0
-                ans=formatFrac(1//3, 3)
+                ans=1//3
                 return ans
                 if proof
                     return intproof(m,s,1//3, true)
@@ -55,7 +53,7 @@ else
                     return intproof(m,s,a,true)
                 end
 
-                ans=formatFrac(a, den)
+                ans= a
                 return ans
             else
                 if proof
@@ -71,11 +69,12 @@ else
         k=Int64(floor((Wshares/Vnum)))
         a = min(((V-j)W + (2j -V-1)m//s)//((V-j)W + (j-1)V),
                     ((V-k+1)m//s + k - V)//((V-k-1)V + 2k))
+        print(a)
         f=V-k
         den=lcm(s, denominator(a))
         if a<=1//3
             if vint1(m,s,1//3)
-                ans=formatFrac(1//3, 3)
+                ans= 1//3
                 if proof
                     return intproof(m,s,1//3,true)
                 end
@@ -88,7 +87,7 @@ else
                 if proof
                     return intproof(m,s,a,true)
                 end
-            ans = formatFrac(a, den)
+            ans = a
             return ans
 
             else
@@ -132,9 +131,9 @@ xbuddy = 1-x
 ybuddy = 1-y
 
 #=alpha1 = (total-x)*(1//(V-1))
-alpha2= 1-(total-y)*(1//(W-1))=#
+alpha2= 1-(total-y)*(1//(W-1))
 
-#=f alpha1!=a ||alpha2!=a
+if alpha1!=a ||alpha2!=a
     return false=#
 if x>y||x<a||y>1-a
     return -1
@@ -194,6 +193,7 @@ elseif Wshares<Vshares
     end
     end
 end
+
 
 
 #given m,s,a program will output a proof that f(m,s) <= alpha using int method

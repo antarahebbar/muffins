@@ -5,7 +5,7 @@ include("FCBound.jl")
 using .FC
 
 include("Half.jl")
-using .HALF
+using .HALFMETHOD
 
 include("ebm.jl")
 using .EBM
@@ -14,7 +14,7 @@ include("tools.jl")
 using .TOOLS
 
 include("Int.jl")
-using .INT
+using .INTMETHOD
 
 include("findproc.jl")
 using .FINDPROC
@@ -23,7 +23,7 @@ include("format.jl")
 using .FORMAT
 
 include("Mid.jl")
-using .MID
+using .MIDMETHOD
 
 export muffins
 
@@ -51,23 +51,22 @@ elseif m<s||m<=0||s<=0
 else
 
 #checking if any method did not get conclusive alpha, 2 signifies the method failed
-alpha_int = alpha_int== 1 ? alpha_int = "1" : alpha_int=alpha_int
-alpha_half = alpha_half== 1 ? alpha_half = "1" : alpha_half=alpha_half
+#=alpha_half = alpha_half== 1 ? alpha_half = "1" : alpha_half=alpha_half
 alpha_fc = alpha_fc== 1 ? alpha_fc = "1" : alpha_fc=alpha_fc
 alpha_ebm = alpha_ebm ==1 ? alpha_ebm = "1" : alpha_ebm=alpha_ebm
-alpha_mid = alpha_mid ==1 ? alpha_mid = "1" : alpha_mid=alpha_mid
+alpha_mid = alpha_mid ==1 ? alpha_mid = "1" : alpha_mid=alpha_mid=#
 
 #converting to rational integers
-fracfc = toFrac(alpha_fc)
+#=fracfc = toFrac(alpha_fc)
 fracint = toFrac(alpha_int)
 frachalf = toFrac(alpha_half)
 fracebm = toFrac(alpha_ebm)
-fracmid = toFrac(alpha_mid)
+fracmid = toFrac(alpha_mid)=#
 
 
 
 #finding min of five methods
-alpha= min(fracfc, frachalf, fracint, fracebm, fracmid)
+alpha= min(alpha_fc, alpha_half, alpha_int, alpha_ebm, alpha_mid)
 alphaS=formatFrac(alpha, denominator(alpha))
 
 
@@ -84,17 +83,17 @@ methodmid = false
 
 
 #determining which method was used
-if fracfc==alpha
+if alpha_fc==alpha
     printf("The Floor Ceiling method found that muffins($m,$s) <= $alphaS")
-elseif fracebm==alpha
+elseif alpha_ebm==alpha
     printf("The Easy-Buddy Match method found that muffins($m,$s) <= $alphaS")
-elseif alpha==fracint
+elseif alpha==alpha_int
     methodint=true
     printf("The INT method found that muffins($m,$s) <= $alphaS")
-elseif alpha==frachalf
+elseif alpha==alpha_half
     methodhalf=true
     printf("The Half method found that muffins($m,$s) <= $alphaS")
-elseif alpha==fracmid
+elseif alpha==alpha_mid
     printf("The Mid Method found that muffins($m, $s) <= $alphaS")
     methodmid = true
 else
@@ -113,9 +112,9 @@ elseif methodmid
     return mid(m,s,output=2), findproc(m,s,alpha)
 
 else
-    if fracfc==alpha
+    if alpha_fc==alpha
     printf("Since Floor Ceiling can be used to derive alpha, no proof is necessary."), findproc(m,s,alpha)
-    elseif fracebm==alpha
+    elseif alpha_ebm==alpha
     printf("Since EBM can be used to derive alpha, no proof is necessary."), findproc(m,s,alpha)
 end
 

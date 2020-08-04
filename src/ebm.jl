@@ -52,8 +52,7 @@ else
         return 1 #ebm failed, upperbound of alpha is 1
 end
 
-aS = formatFrac(a, denominator(a))
-return aS
+return a
 end
 
 else
