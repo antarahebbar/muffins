@@ -1,13 +1,13 @@
 module EBM
 
 include("tools.jl")
-using .Tools
+using .TOOLS
 
 include("format.jl")
-using .Formatting
+using .FORMAT
 
 include("FCBound.jl")
-using .FloorCeiling
+using .FC
 
 export ebm, ebmproof
 

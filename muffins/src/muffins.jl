@@ -1,29 +1,29 @@
-module Muffins
+module MUFFINS
 
 
 include("FCBound.jl")
-using .FloorCeiling
+using .FC
 
 include("Half.jl")
-using .Half
+using .HALF
 
 include("ebm.jl")
 using .EBM
 
 include("tools.jl")
-using .Tools
+using .TOOLS
 
 include("Int.jl")
-using .IntMethod
+using .INT
 
 include("findproc.jl")
-using .FindProc
+using .FINDPROC
 
 include("format.jl")
-using .Formatting
+using .FORMAT
 
 include("Mid.jl")
-using .MidMethod
+using .MID
 
 export muffins
 

@@ -1,10 +1,10 @@
-module MidMethod
+module MID
 
 
 #MidMethod for joint Muffin Package, https://github.com/GeneralPoxter/Muffins.jl
 
 include("Format.jl")
-using .Formatting
+using .FORMAT
 
 export mid, vmid, SVJ, findendJ, FracFormat, FracConvert
 

@@ -1,10 +1,10 @@
-module Half
+module HALF
 
 include("format.jl")
-using .Formatting
+using .FORMAT
 
 include("tools.jl")
-using .Tools
+using .TOOLS
 
 export vhalf1, half, halfproof
 

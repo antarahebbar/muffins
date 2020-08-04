@@ -1,4 +1,4 @@
-module Tools
+module TOOLS
 
 using Combinatorics
 

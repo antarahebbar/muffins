@@ -1,10 +1,10 @@
-module IntMethod
+module INT
 
 include("tools.jl")
-using .Tools
+using .TOOLS
 
 include("format.jl")
-using .Formatting
+using .FORMAT
 
 export int, vint1, intproof
 

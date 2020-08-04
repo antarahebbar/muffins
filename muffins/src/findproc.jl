@@ -1,11 +1,11 @@
 #program is from repo Mufins.jl, https://github.com/GeneralPoxter/Muffins.jl
-module FindProc
+module FINDPROC
 
 using JuMP
 using Cbc
 
 include("format.jl")
-using .Formatting
+using .FORMAT
 
 export findproc, vectorize, unpack, unionF, mapCat, f
 

@@ -1,10 +1,10 @@
 module HBM
 
 include("tools.jl")
-using .Tools
+using .TOOLS
 
 include("format.jl")
-using .Format
+using .FORMAT
 
 #unfinished code
 #Helper function for HBM, verifies whether (m,s) is a candidate for hbm method

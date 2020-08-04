@@ -1,8 +1,8 @@
 # FC bound, Antara Hebbar
-module FloorCeiling
+module FC
 
 include("format.jl")
-using .Formatting
+using .FORMAT
 
 export fc
 

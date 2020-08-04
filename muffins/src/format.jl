@@ -1,4 +1,4 @@
-module Formatting
+module FORMAT
 
 Base.findlast(char::Char, str::String) = findlast(char.x, str.x)
 
