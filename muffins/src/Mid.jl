@@ -6,7 +6,7 @@ module MidMethod
 include("Format.jl")
 using .Formatting
 
-export mid, vmid, SVJ, findendJ
+export mid, vmid, SVJ, findendJ, FracFormat, FracConvert
 
 #jasons version of sv
 function SVJ(m, s)
@@ -26,6 +26,26 @@ function findendJ(m, s, alpha, V)
     y = y >= 1-alpha ? 1-alpha : (y <= alpha ? alpha : y)
 
     ((alpha, x), (y, 1-alpha))
+end
+
+function FracFormat(frac::Rational{Int64}, den=denominator(frac))
+    (n, d) = (numerator(frac), denominator(frac))
+    if n % d == 0 && den == d
+        return string(Int64(n/d))
+    end
+    m = den % d == 0 ? Int64(den/d) : 1
+    string(m * n, "/", m * d)
+end
+
+
+#specific toFrac function needed for vmid
+function FracConvert(frac::String)
+    try
+        f = vcat(map(x->parse(Int64, x), split(frac, "/")), [1])
+        f[1]//f[2]
+    catch e
+        Int64(frac)
+    end
 end
 
 # Determines upper bound alpha with Midpoint Method, optionally outputs proof
@@ -71,7 +91,7 @@ function mid(m::Int64, s::Int64; output::Int64=2)
     for alpha in sort(unique(alphas))
         if denominator(alpha) != 0 && vmid(m, s, alpha, output=0)
             vmid(m, s, alpha, output=output)
-            alphastring=formatFrac(alpha)
+            alphastring=FracFormat(alpha)
             return alphastring
         end
     end
@@ -102,8 +122,8 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
         # Initialize Interval Method proof
         if output > 1
             # Define and format variables for proof
-            alphaF = formatFrac(alpha)
-            size = formatFrac(m//s)
+            alphaF = FracFormat(alpha)
+            size = FracFormat(m//s)
 
             # Establish assumptions and premises
             printHeader("OVERVIEW")
@@ -139,15 +159,15 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
 
         # Define and format variables for proof
         cd = lcm(s, denominator(x), denominator(y))
-        alphaF = formatFrac(alpha, cd)
-        alpha1 = formatFrac(1-alpha, cd)
-        size = formatFrac(m//s, cd)
-        a = formatFrac(m//s-x, cd)
-        b = formatFrac(m//s-y, cd)
-        xF = formatFrac(x, cd)
-        x1 = formatFrac(1-x, cd)
-        yF = formatFrac(y, cd)
-        y1 = formatFrac(1-y, cd)
+        alphaF = FracFormat(alpha, cd)
+        alpha1 = FracFormat(1-alpha, cd)
+        size = FracFormat(m//s, cd)
+        a = FracFormat(m//s-x, cd)
+        b = FracFormat(m//s-y, cd)
+        xF = FracFormat(x, cd)
+        x1 = FracFormat(1-x, cd)
+        yF = FracFormat(y, cd)
+        y1 = FracFormat(1-y, cd)
         diff = abs(numV-numW)
 
         # Continue proof
@@ -266,8 +286,8 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
         # Determine possible small-sh, large-sh combinations
         posCombo = []
         for k=0:vMax
-            upperB = (vMax-k)*toFrac(rngL[2]) + (k)*toFrac(rngS[2])
-            lowerB = (vMax-k)*toFrac(rngL[1]) + (k)*toFrac(rngS[1])
+            upperB = (vMax-k)*FracConvert(rngL[2]) + (k)*FracConvert(rngS[2])
+            lowerB = (vMax-k)*FracConvert(rngL[1]) + (k)*FracConvert(rngS[1])
             if upperB > m//s > lowerB
                 append!(posCombo, k)
             end
@@ -275,7 +295,7 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
 
         # Diverge from Interval Method
         if length(posCombo) > 0
-            mid = formatFrac(1//2, cd)
+            mid = FracFormat(1//2, cd)
             if output > 1
                 combos = ["$k small $vMax-shs and $(vMax-k) large $vMax-shs" for k in posCombo]
                 printfT("Case 3",
@@ -313,8 +333,8 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
                 # Determine possible interval combinations
                 for c=0:W, b=0:(W-c)
                     a = W-b-c
-                    upperB = a*1//2 + b*toFrac(k) + c*(1-alpha)
-                    lowerB = a*toFrac(j) + b*1//2 + c*toFrac(l)
+                    upperB = a*1//2 + b*FracConvert(k) + c*(1-alpha)
+                    lowerB = a*FracConvert(j) + b*1//2 + c*FracConvert(l)
                     if a+b in posCombo && upperB > m//s > lowerB
                         append!(posInt, [(a, b, c)])
                     end
@@ -341,8 +361,8 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
                 # Determine possible interval combinations
                 for c=0:V, b=0:(V-c)
                     a = V-b-c
-                    upperB = a*toFrac(i) + b*1//2 + c*toFrac(k)
-                    lowerB = a*alpha + b*toFrac(j) + c*1//2
+                    upperB = a*FracConvert(i) + b*1//2 + c*FracConvert(k)
+                    lowerB = a*alpha + b*FracConvert(j) + c*1//2
                     if a in posCombo && upperB > m//s > lowerB
                         append!(posInt, [(a, b, c)])
                     end
@@ -385,9 +405,9 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
                 end
 
                 if length(posInt) == 3
-                    x1 = formatFrac(((z1[3]-z1[2]+z2[2]-z2[3])numMin + ((z2[3]-z1[3])z3[2]+(z1[2]-z2[2])z3[3])sMax)//((z1[3]-z1[2]+z2[2]-z2[3])z3[1] + (z1[1]-z1[3]+z2[3]-z2[1])z3[2] + (z1[2]-z1[1]+z2[1]-z2[2])z3[3]))
-                    x2 = formatFrac(((z1[3]-z2[3])numMin - ((z1[3]-z2[3])z3[1] + (z2[1]-z1[1])z3[3])*toFrac(x1))//((z1[3]-z2[3])z3[2] + (z2[2]-z1[2])z3[3]))
-                    x3 = formatFrac(sMax-toFrac(x1)-toFrac(x2))
+                    x1 = FracFormat(((z1[3]-z1[2]+z2[2]-z2[3])numMin + ((z2[3]-z1[3])z3[2]+(z1[2]-z2[2])z3[3])sMax)//((z1[3]-z1[2]+z2[2]-z2[3])z3[1] + (z1[1]-z1[3]+z2[3]-z2[1])z3[2] + (z1[2]-z1[1]+z2[1]-z2[2])z3[3]))
+                    x2 = FracFormat(((z1[3]-z2[3])numMin - ((z1[3]-z2[3])z3[1] + (z2[1]-z1[1])z3[3])*FracConvert(x1))//((z1[3]-z2[3])z3[2] + (z2[2]-z1[2])z3[3]))
+                    x3 = FracFormat(sMax-FracConvert(x1)-FracConvert(x2))
 
                     equations = ["$(z1[1])·x + $(z1[2])·y + $(z1[3])·z = $(z2[1])·x + $(z2[2])·y + $(z2[3])·z",
                                 "$(z3[1])·x + $(z3[2])·y + $(z3[3])·z = |$Z3| = $numMin",
@@ -400,7 +420,7 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
                                 "and z the # of students with",
                                 "$(a[3]) A-shs, $(b[3]) B-shs, and $(c[3]) C-shs"]
 
-                    if occursin("/", x1) || occursin("/", x2) || toFrac(x1) < 0 || toFrac(x2) < 0 || toFrac(x3) < 0
+                    if occursin("/", x1) || occursin("/", x2) || FracConvert(x1) < 0 || FracConvert(x2) < 0 || FracConvert(x3) < 0
                         solutions = ["The solutions are x = $x1, y = $x2, z = $x3",
                                     "The solutions are not positive integers, so the entirety of Case 3 is impossible"]
                     else
@@ -411,8 +431,8 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
                 end
 
                 if length(posInt) == 2
-                    x1 = formatFrac(sMax//(1+(z1[1]-z2[1])//(z2[2]-z1[2])))
-                    x2 = formatFrac(sMax-toFrac(x1))
+                    x1 = FracFormat(sMax//(1+(z1[1]-z2[1])//(z2[2]-z1[2])))
+                    x2 = FracFormat(sMax-FracConvert(x1))
 
                     equations = ["$(z1[1])·x + $(z1[2])·y = $(z2[1])·x + $(z2[2])·y",
                                 "x + y = s_$vMax = $sMax",
@@ -422,10 +442,10 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
                                 "and y the # of students with",
                                 "$(a[2]) A-shs, $(b[2]) B-shs, and $(c[2]) C-shs"]
 
-                    if occursin("/", x1) || toFrac(x1) < 0 || toFrac(x2) < 0
+                    if occursin("/", x1) || FracConvert(x1) < 0 || FracConvert(x2) < 0
                         solutions = ["The solutions are x = $x1, y = $x2",
                                     "The solutions are not positive integers, so the entirety of Case 3 is impossible"]
-                    elseif z3[1]*toFrac(x1) + z3[2]*toFrac(x2) != numMin
+                    elseif z3[1]*FracConvert(x1) + z3[2]*FracConvert(x2) != numMin
                         insert!(equations, 3, "$(z3[1])·x + $(z3[2])·y = |$Z3| = $numMin")
                         solutions = ["This system has no solutions, so the entirety of Case 3 is impossible"]
                     else
@@ -479,7 +499,7 @@ function vmid(m::Int64, s::Int64, alpha::Rational{Int64}; output::Int64=2)
         end
 
         # Conclude proof
-        alpha = formatFrac(alpha)
+        alpha = FracFormat(alpha)
         if output > 1
             # Conclude with alpha's value
             printHeader("CONCLUSION")
