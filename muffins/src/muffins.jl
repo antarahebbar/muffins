@@ -22,10 +22,13 @@ using .FindProc
 include("format.jl")
 using .Formatting
 
-export mini
+include("Mid.jl")
+using .MidMethod
+
+export muffins
 
 #given m,s, program will output min of half, int, and fc
-function mini(m::Int64, s::Int64)
+function muffins(m::Int64, s::Int64)
 
 alpha_fc = fc(m,s)
 
@@ -34,6 +37,8 @@ alpha_half = half(m,s)
 alpha_int = int(m,s)
 
 alpha_ebm = ebm(m,s)
+
+alpha_mid = mid(m,s)
 
 verify = true
 
@@ -46,24 +51,28 @@ elseif m<s||m<=0||s<=0
 else
 
 #checking if any method did not get conclusive alpha, 2 signifies the method failed
-alpha_int = alpha_int== -1 ? alpha_int = "2" : alpha_int=alpha_int
-alpha_half = alpha_half== -1 ? alpha_half = "2" : alpha_half=alpha_half
-alpha_fc = alpha_fc== -1 ? alpha_fc = "2" : alpha_fc=alpha_fc
-alpha_ebm = alpha_ebm == -1 ? alpha_ebm = "2" : alpha_ebm=alpha_ebm
+alpha_int = alpha_int== 1 ? alpha_int = "1" : alpha_int=alpha_int
+alpha_half = alpha_half== 1 ? alpha_half = "1" : alpha_half=alpha_half
+alpha_fc = alpha_fc== 1 ? alpha_fc = "1" : alpha_fc=alpha_fc
+alpha_ebm = alpha_ebm ==1 ? alpha_ebm = "1" : alpha_ebm=alpha_ebm
+alpha_mid = alpha_mid ==1 ? alpha_mid = "1" : alpha_mid=alpha_mid
 
 #converting to rational integers
 fracfc = toFrac(alpha_fc)
 fracint = toFrac(alpha_int)
 frachalf = toFrac(alpha_half)
 fracebm = toFrac(alpha_ebm)
+fracmid = toFrac(alpha_mid)
 
-#finding min of four methods
-alpha= min(fracfc, frachalf, fracint, fracebm)
+
+
+#finding min of five methods
+alpha= min(fracfc, frachalf, fracint, fracebm, fracmid)
 alphaS=formatFrac(alpha, denominator(alpha))
 
 
-if alpha==2//1
-    return "FC, Half, EBM, and INT failed. Minipackage does not work for muffins($m,$s)."
+if alpha==1//1
+    return "FC, Half, EBM, INT, and MID could not find an upper bound for Muffins($m, $s) < 1, therefore muffins($m,$s) <= 1"
     verify = false
 
 else
@@ -71,6 +80,7 @@ else
 
 methodhalf=false
 methodint=false
+methodmid = false
 
 
 #determining which method was used
@@ -84,6 +94,9 @@ elseif alpha==fracint
 elseif alpha==frachalf
     methodhalf=true
     printf("The Half method found that muffins($m,$s) <= $alphaS")
+elseif alpha==fracmid
+    printf("The Mid Method found that muffins($m, $s) <= $alphaS")
+    methodmid = true
 else
     printf("Mini package failed, cannot find a method used to derive alpha")
 end
@@ -96,6 +109,8 @@ if methodhalf
 
 elseif methodint
     return intproof(m,s,alpha), findproc(m,s,alpha)
+elseif methodmid
+    return mid(m,s,output=2), findproc(m,s,alpha)
 
 else
     if fracfc==alpha

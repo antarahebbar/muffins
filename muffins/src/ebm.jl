@@ -11,7 +11,7 @@ using .FloorCeiling
 
 export ebm, ebmproof
 
-#given (m,s), program outputs alpha using easy-buddy match method, returns either alpha or -1 if no answer
+#given (m,s), program outputs alpha using easy-buddy match method, returns either alpha or 1 (no answer but largest upperbound)
 function ebm(m::Int64, s::Int64, proof::Bool=false)
 
 V, W, Vnum, Wnum = sv(m,s)
@@ -49,7 +49,7 @@ elseif j>=d&&j<=(2*d-1)
         X=min((j+d)//4)
         a = (d*k+X)//(3*d*k+j)
 else
-        return -1
+        return 1 #ebm failed, upperbound of alpha is 1
 end
 
 aS = formatFrac(a, denominator(a))
@@ -57,7 +57,7 @@ return aS
 end
 
 else
-        return -1
+        return 1 #ebm failed, upperbound of alpha is 1
 
 end
 end
@@ -65,7 +65,7 @@ end
 
 
 #unfinished
-#Helper function for emb, optionally outputs a proof using easy-buddy match method
+#Proof function for emb, optionally outputs a proof using easy-buddy match method
 function embproof(m, s, a, proof::Bool=true)
 
 #finding V and W

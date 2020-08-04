@@ -6,6 +6,7 @@ import Base.match
 match(m,s,frac1::Rational{Int64}, frac2::Rational{Int64}) = match(m.x,s.x,frac1.x,frac2.x)
 
 export sv, findend, buddy, match, combs, perm, targperm
+
 #uses v conejcture to solve for V&W shares
 function sv(m::Int64,s::Int64)
 

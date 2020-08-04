@@ -9,6 +9,7 @@ using .Formatting
 export int, vint1, intproof
 
 #Function takes (m,s) and outputs alpha if vint verifies it, can also output optional proof
+#will output 1 if vint does not verify int, 1 is the largest upperbound for alpha
 function int(m,s, proof::Bool=false)
 V, W, Vnum, Wnum = sv(m,s)
 
@@ -44,7 +45,7 @@ else
                     return intproof(m,s,1//3, true)
                 end
             else
-                return -1
+                return 1 #vint failed, upperbound of alpha is 1
             end
         else
             den=lcm(s, denominator(a))
@@ -60,7 +61,7 @@ else
                 if proof
                     return intproof(m,s,a,true)
                 end
-                return -1 #int failed, could not find conclusive alpha
+                return 1 #vint failed, upperbound of alpha is 1
         end
         end
 
@@ -79,7 +80,7 @@ else
                     return intproof(m,s,1//3,true)
                 end
             else
-                return -1
+                return 1 #vint failed, upperbound of alpha is 1
             end
             return ans
         else
@@ -94,12 +95,12 @@ else
                 if proof
                     return intproof(m,s,a,true)
                 end
-            return -1 #int failed, could not find conclusive alpha
+            return 1 #vint failed, upperbound of alpha is 1
 
             end
         end
     else
-        return -1
+        return 1 #vint failed, upperbound of alpha is 1
     end
 
 end

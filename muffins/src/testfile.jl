@@ -4,7 +4,7 @@ include("format.jl")
 using .Formatting
 
 include("FCBound.jl")
-using .FC
+using .FloorCeiling
 
 include("half.jl")
 using .Half
@@ -18,7 +18,10 @@ using .EBM
 include("findproc.jl")
 using .FindProc
 
-export test1
+include("tools.jl")
+using .Tools
+
+export test1, print_Intervals
 
 test1(a,b) = printfT("Hello World!", fc(a,b), half(a,b), int(a,b))
 

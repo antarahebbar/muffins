@@ -9,6 +9,7 @@ using .Tools
 export vhalf1, half, halfproof
 
 #taking m,s,a, will output whether a is verified by half method. Returns -1 if vhalf fails, 0 if vhalf works
+#will return 1 if vhalf failes, since 1 is the largest alpha
 function vhalf1(m,s,a)
 
 total=m//s
@@ -81,7 +82,7 @@ if W*Wshr>V*Vshr
             a = formatFrac(a, lcm(s, denominator(a)))
             return a
         else
-            return -1 #-1 is indicator of half failing
+            return 1 #vhalf failed, upperbound of alpha is 1
         end
     end
 
@@ -101,12 +102,12 @@ elseif W*Wshr<V*Vshr
             a = formatFrac(a, lcm(s, denominator(a)))
             return a
         else
-            return -1 #-1 is indicator of vhalf failing
+            return 1 #vhalf failed, upperbound of alpha is 1
         end
 
     end
 else
-    return -1
+    return 1 #vhalf failed, upperbound of alpha is 1
 end
 end
 end
