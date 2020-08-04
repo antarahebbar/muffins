@@ -32,8 +32,8 @@ else
         ubmin=Int64(floor(Vshares/Wnum)) #upper bound for # of W largeshares
         lbmin = Int64(floor((newgap)/Wnum)) #lower bound for # of W smallshares
         f=W-ubmin
-        a = min(((f)W - (f+1)m//s + ubmin)//((f-1)W + 2ubmin),    # Value for alpha derived by solving f(1-α) + (W-f)(1-y) = m/s
-                            ((lbmin-1)W + (W -2lbmin+1)m//s)//(W^2 - lbmin))            # Value for alpha derived by solving gy + (W-g)(1-x) = m/s
+        a = min(((f)W - (f+1)m//s + ubmin)//((f-1)W + 2ubmin),
+                            ((lbmin-1)W + (W -2lbmin+1)m//s)//(W^2 - lbmin)) 
 
         if a<=1//3
             if vint1(m,s,1//3)==0
